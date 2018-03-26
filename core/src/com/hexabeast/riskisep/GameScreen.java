@@ -15,8 +15,10 @@ public class GameScreen implements Screen{
 	public static float gameZoom = 1;
 	public static OrthographicCamera camera;
 	public SpriteBatch batch = Main.batch;
+	public static int camw = 1920;
+	public static int camh = 1080;
 	int CurFPS;
-	Vector2 gameMouse;
+	public static Vector2 gameMouse;
 
 	
 	private void Clear()
@@ -32,14 +34,14 @@ public class GameScreen implements Screen{
 	@Override
 	public void resize(int width, int height)
 	{
-		camera.viewportWidth = 1280;
-		camera.viewportHeight = ((float)height/(float)width)*1280;
+		camera.viewportWidth = camw;
+		camera.viewportHeight = ((float)height/(float)width)*camw;
 	}
 	
 	@Override
 	public void show() 
 	{
-		camera = new OrthographicCamera(1280,720);
+		camera = new OrthographicCamera(camw,camh);
 		gameMouse = new Vector2();
 		InitializeCamera();
 	}
@@ -47,7 +49,7 @@ public class GameScreen implements Screen{
 	private void InitializeCamera()
 	{
 		camera.zoom = gameZoom;
-		camera.position.set(0,0, camera.position.z);	
+		camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2, camera.position.z);	
 	}
 
 
@@ -117,8 +119,11 @@ public class GameScreen implements Screen{
 		
 		batch.begin();
 		
-		Texture bad = TextureManager.tex.get("badlogic");
-		batch.draw(bad,-bad.getWidth()/2,-bad.getHeight()/2);
+		Texture background = TextureManager.tex.get("background");
+		batch.draw(background,-53,-33);
+		
+		AllPays.update();
+		Shaders.setDefaultShader();
 		
 		batch.end();
 		

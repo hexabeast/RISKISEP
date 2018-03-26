@@ -12,7 +12,7 @@ public class TextureManager {
 	
 	public static Texture img;
 	
-	private static void loadOne(String name, String namefile)
+	public static void loadOne(String name, String namefile)
 	{
 		Texture temp = new Texture(namefile);
 		tex.put(name, temp);
@@ -21,7 +21,7 @@ public class TextureManager {
 	
 	public static void load()
 	{
-		loadOne("badlogic","badlogic.jpg");
+		loadOne("background","background.png");
 	}
 	
 	public static void dispose()

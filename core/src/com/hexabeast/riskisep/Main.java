@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class Main extends Game {
 	
-	public static int windowWidth = 1280;
-	public static int windowHeight = 720;
+	public static int windowWidth = 1600;
+	public static int windowHeight = 900;
 	public static SpriteBatch batch;
 	public static ShapeRenderer shapebatch;
 	public static GameScreen game;
@@ -17,9 +17,11 @@ public class Main extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		Shaders.loadShaders();
 		shapebatch = new ShapeRenderer();
 		game = new GameScreen();
 		TextureManager.load();
+		AllPays.loadPays();
 		Inputs.instance = new Inputs();
 		Gdx.input.setInputProcessor(Inputs.instance);
 	}
@@ -36,6 +38,7 @@ public class Main extends Game {
 	
 	@Override
 	public void resize (int width, int height) {
+		Gdx.graphics.setWindowedMode(16*height/9, height);
 		super.resize(width, height);
 	}
 

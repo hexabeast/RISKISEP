@@ -1,0 +1,51 @@
+varying vec4 v_color;
+varying vec2 v_texCoord0;
+uniform vec2 u_invScreenSize;
+uniform vec3 u_color;
+
+const float offset = 1;
+float texelsizex;
+float texelsizey;
+
+uniform sampler2D u_sampler2D;
+
+void main() 
+{
+	vec4 col = texture2D(u_sampler2D, v_texCoord0) * v_color;
+	vec4 green = vec4(col.x,col.y,col.z,col.w);
+	
+	vec2 textureSize2d = textureSize(u_sampler2D,0);
+	texelsizex = 1.0 / textureSize2d.x;
+	texelsizey = 1.0 / textureSize2d.y;
+
+	vec2 T = v_texCoord0;
+	float ofx = offset*texelsizex;
+	float ofy = offset*texelsizey;
+
+	float a =0;
+
+	if(T.x+ofx>1)a+=0;
+	else a+= texture2D(u_sampler2D, vec2(T.x+ofx,T.y)).a;
+
+	if(T.x-ofx<0)a+=0;
+	else a+= texture2D(u_sampler2D, vec2(T.x-ofx,T.y)).a;
+
+	if(T.y+ofy>1)a+=0;
+	else a+= texture2D(u_sampler2D, vec2(T.x,T.y+ofy)).a;
+
+	if(T.y-ofy<0)a+=0;
+	else a+= texture2D(u_sampler2D, vec2(T.x,T.y-ofy)).a;
+
+
+	if(col.a > 0.5 && a <= 3)
+	{
+		green.x = 0;
+		green.y = 0;
+		green.z = 0;
+	}
+	
+	//if(col.w>0)
+	gl_FragColor = green;
+	//else
+	//gl_FragColor = vec4(0,0,0,0);
+}
