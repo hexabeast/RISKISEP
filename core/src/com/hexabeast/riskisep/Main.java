@@ -5,6 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.hexabeast.riskisep.gameboard.AllPays;
+import com.hexabeast.riskisep.ressources.Shaders;
+import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class Main extends Game {
 	

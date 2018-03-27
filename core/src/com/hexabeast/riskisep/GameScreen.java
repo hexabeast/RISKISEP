@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.hexabeast.riskisep.gameboard.AllPays;
+import com.hexabeast.riskisep.gameboard.GameMaster;
+import com.hexabeast.riskisep.ressources.Shaders;
+import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class GameScreen implements Screen{
 	
@@ -19,6 +23,8 @@ public class GameScreen implements Screen{
 	public static int camh = 1080;
 	int CurFPS;
 	public static Vector2 gameMouse;
+	
+	public static GameMaster master;
 
 	
 	private void Clear()
@@ -29,6 +35,11 @@ public class GameScreen implements Screen{
 	
 	public GameScreen() 
 	{
+		master = new GameMaster();
+		master.beginGame(2);
+		camera = new OrthographicCamera(camw,camh);
+		gameMouse = new Vector2();
+		InitializeCamera();
 	}
 	
 	@Override
@@ -41,9 +52,7 @@ public class GameScreen implements Screen{
 	@Override
 	public void show() 
 	{
-		camera = new OrthographicCamera(camw,camh);
-		gameMouse = new Vector2();
-		InitializeCamera();
+		
 	}
 	
 	private void InitializeCamera()
@@ -119,11 +128,13 @@ public class GameScreen implements Screen{
 		
 		batch.begin();
 		
+		
 		Texture background = TextureManager.tex.get("background");
 		batch.draw(background,-53,-33);
 		
 		AllPays.update();
 		Shaders.setDefaultShader();
+		master.update();
 		
 		batch.end();
 		

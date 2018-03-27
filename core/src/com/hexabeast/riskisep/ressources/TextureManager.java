@@ -1,4 +1,4 @@
-package com.hexabeast.riskisep;
+package com.hexabeast.riskisep.ressources;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +22,14 @@ public class TextureManager {
 	public static void load()
 	{
 		loadOne("background","background.png");
+		loadOne("soldierb","soldieriskblue.png");
+		loadOne("soldierr","soldieriskred.png");
+	}
+	
+	public static Texture getsoldiertex(int team)
+	{
+		if(team==0)return tex.get("soldierr");
+		else return tex.get("soldierb");
 	}
 	
 	public static void dispose()

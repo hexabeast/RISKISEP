@@ -1,7 +1,8 @@
-package com.hexabeast.riskisep;
+package com.hexabeast.riskisep.ressources;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.hexabeast.riskisep.Main;
 
 public class Shaders {
 	public static ShaderProgram base;

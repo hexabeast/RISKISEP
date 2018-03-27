@@ -1,4 +1,4 @@
-package com.hexabeast.riskisep;
+package com.hexabeast.riskisep.gameboard;
 
 
 import java.util.ArrayList;
@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.hexabeast.riskisep.GameScreen;
+import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class AllPays {
-	private static ArrayList<Pays> pays = new ArrayList<Pays>();
+	public static ArrayList<Pays> pays = new ArrayList<Pays>();
 	
 	
 	public static void loadPays()
@@ -25,7 +27,7 @@ public class AllPays {
 		    int h = Integer.parseInt(comp.getString("height"))/2;
 		    int x = Integer.parseInt(comp.getString("x"))/2;
 		    int y = Integer.parseInt(comp.getString("y"))/2-30;
-		    pays.add(new Pays(nom,x,GameScreen.camh-y-TextureManager.tex.get(nom).getHeight()/2,w,h));
+		    pays.add(new Pays(pays.size(),nom,x,GameScreen.camh-y-TextureManager.tex.get(nom).getHeight()/2,w,h));
 		}
 	}
 	
@@ -45,6 +47,15 @@ public class AllPays {
 			if(selection != null)selection.update(1);
 			
 		}
+	}
+	
+	public static int paysTouched()
+	{
+		for(int i=0; i<pays.size(); i++)
+		{
+			if(pays.get(i).isTouched())return i;
+		}
+		return -1;
 	}
 	
 }
