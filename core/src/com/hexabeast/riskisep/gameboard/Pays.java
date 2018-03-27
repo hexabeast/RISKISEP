@@ -23,6 +23,8 @@ public class Pays {
 	public int team = 0;
 	public ArrayList<Soldier> occupants = new ArrayList<Soldier>();
 	
+	Pixmap pixmap;
+	
 	private float biggify = 1.02f;
 	
 	public Pays(int id,String nom, int x, int y, int w, int h)
@@ -33,6 +35,11 @@ public class Pays {
 		this.w=w;
 		this.h=h;
 		this.nom=nom;
+		Texture texture = TextureManager.tex.get(nom);
+		if (!texture.getTextureData().isPrepared()) {
+            texture.getTextureData().prepare();
+        }
+		pixmap = texture.getTextureData().consumePixmap();
 	}
 	
 	public void update(int select)
@@ -53,7 +60,7 @@ public class Pays {
 	{
 		Rectangle spriteBounds = new Rectangle(x,y,w,h);
 	    if (spriteBounds.contains(xx,yy)) {
-	        Texture texture = TextureManager.tex.get(nom);
+	        
 
 	        int spriteLocalX = (int) (xx - x);
 	        
@@ -61,12 +68,8 @@ public class Pays {
 
 	        int textureLocalX = spriteLocalX*2;
 	        int textureLocalY = spriteLocalY*2;
-
-	        if (!texture.getTextureData().isPrepared()) {
-	            texture.getTextureData().prepare();
-	        }
-	        Pixmap pixmap = texture.getTextureData().consumePixmap();
-	        Color col = new Color(pixmap.getPixel(textureLocalX, texture.getHeight()-textureLocalY));
+	        
+	        Color col = new Color(pixmap.getPixel(textureLocalX, TextureManager.tex.get(nom).getHeight()-textureLocalY));
 	        if(col.a<0.5)return false;
 	        return true;
 	    }
@@ -104,10 +107,14 @@ public class Pays {
 						if(new Vector2(otherx,othery).dst(posvec)<(w+h/4)/rotations)dedans=false;
 					}
 				}
-				
 			}
 		}
 		return new Vector2(posx,posy);
 		
+	}
+	
+	public void dispose()
+	{
+		pixmap.dispose();
 	}
 }

@@ -7,7 +7,7 @@ public class Soldier {
 	public float x=0;
 	public float y=0;
 	public int w=0;
-	public int h=30;
+	public int h=50;
 	
 	public int team = 0;
 	public int type = 0;
@@ -27,7 +27,7 @@ public class Soldier {
 	{
 		if(pays>=0)
 		{
-			Main.batch.draw(TextureManager.getsoldiertex(team),(int)x,(int)y,w,h);
+			Main.batch.draw(TextureManager.getsoldiertex(team),(int)x-w/2,(int)y,w,h);
 		}
 	}
 }
