@@ -81,3 +81,4 @@ Arabie:Moscou
 Algerie:Egypte
 Australienord:Japon
 Bresilouest:Amazonie
+Italie:ArabieSud

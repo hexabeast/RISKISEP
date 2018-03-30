@@ -26,12 +26,11 @@ public class GameMaster {
 	
 	public void update()
 	{
-		if(Inputs.instance.leftpress)
+		if(Inputs.instance.leftmousedown)
 		{
 			int touche = AllPays.paysTouched();
 			if(touche>=0)
 			{
-				Vector2 pos = AllPays.pays.get(touche).getRandomPos();
 				armies.get(joueuractuel).addSoldiers(1, touche);
 			}
 			

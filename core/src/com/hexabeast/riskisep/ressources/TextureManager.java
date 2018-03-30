@@ -4,13 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class TextureManager { 
 	private static ArrayList<Texture> textures = new ArrayList<Texture>();
 	public static Map<String, Texture> tex = new HashMap<String, Texture>();
 	
 	public static Texture img;
+	
+	public static BitmapFont font;
+	public static GlyphLayout fontlayout;
+	
+	
+	
+	
 	
 	public static void loadOne(String name, String namefile)
 	{
@@ -24,6 +36,18 @@ public class TextureManager {
 		loadOne("background","background.png");
 		loadOne("soldierb","soldieriskblue.png");
 		loadOne("soldierr","soldieriskred.png");
+		loadOne("rond","rond.png");
+		loadOne("rondr","rondr.png");
+		loadOne("rondb","rondb.png");
+		
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/cartoon.ttf"));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 28;
+		font = generator.generateFont(parameter);
+		generator.dispose();
+		
+		fontlayout = new GlyphLayout();
+		
 	}
 	
 	public static Texture getsoldiertex(int team)

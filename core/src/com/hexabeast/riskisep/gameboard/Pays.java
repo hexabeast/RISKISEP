@@ -1,11 +1,6 @@
 package com.hexabeast.riskisep.gameboard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,7 +19,10 @@ public class Pays {
 	public int h=0;
 	public int id=0;
 	
-	public int team = 0;
+	public float numberx;
+	public float numbery;
+	
+	public int team = -1;
 	public ArrayList<Soldier> occupants = new ArrayList<Soldier>();
 	
 	public ArrayList<Pays> adjacents = new ArrayList<Pays>();
@@ -40,6 +38,8 @@ public class Pays {
 		this.y=y;
 		this.w=w;
 		this.h=h;
+		numberx = x+w/2;
+		numbery = y+h/2;
 		this.nom=nom;
 		Texture texture = TextureManager.tex.get(nom);
 		if (!texture.getTextureData().isPrepared()) {
@@ -53,6 +53,8 @@ public class Pays {
 	
 	public void update(int select)
 	{
+		if(occupants.size()>0)team = occupants.get(0).team;
+		
 		if(select==2)
 		{
 			Shaders.setRedShader();
@@ -72,6 +74,17 @@ public class Pays {
 		{
 			Main.batch.draw(TextureManager.tex.get(nom),x,y,w,h);
 		}
+		
+		if(occupants.size()==0)
+		Main.batch.draw(TextureManager.tex.get("rond"),numberx-25,numbery-25,50,50);
+		else if(team == 0)Main.batch.draw(TextureManager.tex.get("rondb"),numberx-25,numbery-25,50,50);
+		else if(team == 1)Main.batch.draw(TextureManager.tex.get("rondr"),numberx-25,numbery-25,50,50);
+		
+		TextureManager.fontlayout.setText(TextureManager.font,String.valueOf(occupants.size()));
+		float fw = TextureManager.fontlayout.width;
+		float fh = TextureManager.fontlayout.height;
+		
+		TextureManager.font.draw(Main.batch, String.valueOf(occupants.size()), numberx-fw/2,numbery+fh/2);
 	}
 	
 	public boolean isTouched(float xx, float yy)

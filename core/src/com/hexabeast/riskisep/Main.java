@@ -11,7 +11,7 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class Main extends Game {
 	
-	public static int windowWidth = 1600;
+	public static int windowWidth = 1500;
 	public static int windowHeight = 900;
 	public static SpriteBatch batch;
 	public static ShapeRenderer shapebatch;

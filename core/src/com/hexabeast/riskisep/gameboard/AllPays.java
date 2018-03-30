@@ -28,7 +28,7 @@ public class AllPays {
 		    int w = Integer.parseInt(comp.getString("width"))/2;
 		    int h = Integer.parseInt(comp.getString("height"))/2;
 		    int x = Integer.parseInt(comp.getString("x"))/2;
-		    int y = Integer.parseInt(comp.getString("y"))/2-30;
+		    int y = Integer.parseInt(comp.getString("y"))/2+170;
 		    pays.add(new Pays(pays.size(),nom,x,GameScreen.camh-y-TextureManager.tex.get(nom).getHeight()/2,w,h));
 		}
 
@@ -51,8 +51,19 @@ public class AllPays {
 			{
 				System.out.println("Erreur double lien "+liens[i]);
 			}
-			
 		}
+		
+		rechercheNom("Australieouest").numberx-=20;
+		rechercheNom("Australieest").numberx+=30;
+		rechercheNom("Alaskaouest").numbery+=70;
+		rechercheNom("Afriquest").numberx+=20;
+		rechercheNom("Amazonie").numberx-=20;
+		rechercheNom("Amazonie").numbery+=20;
+		rechercheNom("Bresilouest").numbery-=10;
+		rechercheNom("Bresil").numberx+=20;
+		rechercheNom("Chili").numberx-=20;
+		rechercheNom("Russiecentre").numberx+=15;
+		rechercheNom("Russiecentre").numbery+=15;
 	}
 	
 	public static Pays rechercheNom(String st)
@@ -80,7 +91,7 @@ public class AllPays {
 			}
 			if(selection != null)
 			{
-				if(Inputs.instance.leftpress)selection.update(2);
+				if(Inputs.instance.rightpress)selection.update(2);
 				else selection.update(1);
 			}
 			
