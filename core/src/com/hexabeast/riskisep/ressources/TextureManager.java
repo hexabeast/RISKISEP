@@ -39,6 +39,8 @@ public class TextureManager {
 		loadOne("rond","rond.png");
 		loadOne("rondr","rondr.png");
 		loadOne("rondb","rondb.png");
+		loadOne("panneau","panneaubois.png");
+		loadOne("panneauv","panneauvert.png");
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/cartoon.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();

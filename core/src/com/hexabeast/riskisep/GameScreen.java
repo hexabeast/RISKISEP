@@ -58,7 +58,7 @@ public class GameScreen implements Screen{
 	private void InitializeCamera()
 	{
 		camera.zoom = gameZoom;
-		camera.position.set(1920/2,1080/2, camera.position.z);	
+		camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2, camera.position.z);	
 	}
 
 
@@ -129,8 +129,12 @@ public class GameScreen implements Screen{
 		batch.begin();
 		
 		Shaders.setWaveShader();
-		batch.draw(TextureManager.tex.get("background"),-140,-100);
+		batch.draw(TextureManager.tex.get("background"),-90,130);
 		Shaders.setDefaultShader();
+		Main.batch.setColor(0.25f, 0.2f, 0.4f, 1);
+		batch.draw(TextureManager.tex.get("panneau"),-20,-90);
+		batch.draw(TextureManager.tex.get("panneauv"),1750,-90);
+		Main.batch.setColor(1,1,1,1);
 		
 		AllPays.update();
 		

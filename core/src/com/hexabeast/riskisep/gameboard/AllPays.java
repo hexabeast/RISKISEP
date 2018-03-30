@@ -27,8 +27,8 @@ public class AllPays {
 			TextureManager.loadOne(nom, "pays/"+nom+".png");
 		    int w = Integer.parseInt(comp.getString("width"))/2;
 		    int h = Integer.parseInt(comp.getString("height"))/2;
-		    int x = Integer.parseInt(comp.getString("x"))/2;
-		    int y = Integer.parseInt(comp.getString("y"))/2+170;
+		    int x = Integer.parseInt(comp.getString("x"))/2-50;
+		    int y = Integer.parseInt(comp.getString("y"))/2+50;
 		    pays.add(new Pays(pays.size(),nom,x,GameScreen.camh-y-TextureManager.tex.get(nom).getHeight()/2,w,h));
 		}
 
