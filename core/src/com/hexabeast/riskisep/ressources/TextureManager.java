@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class TextureManager {
+public class TextureManager { 
 	private static ArrayList<Texture> textures = new ArrayList<Texture>();
 	public static Map<String, Texture> tex = new HashMap<String, Texture>();
 	
@@ -21,7 +21,7 @@ public class TextureManager {
 	
 	public static void load()
 	{
-		loadOne("background","background.png");
+		loadOne("background","waterocean.png");
 		loadOne("soldierb","soldieriskblue.png");
 		loadOne("soldierr","soldieriskred.png");
 	}

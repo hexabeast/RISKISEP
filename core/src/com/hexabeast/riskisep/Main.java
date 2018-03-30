@@ -16,6 +16,8 @@ public class Main extends Game {
 	public static SpriteBatch batch;
 	public static ShapeRenderer shapebatch;
 	public static GameScreen game;
+	public static float delta;
+	public static float time = 0;
 	
 	@Override
 	public void create () {
@@ -47,6 +49,8 @@ public class Main extends Game {
 
 	@Override
 	public void render () {
+		delta=Gdx.graphics.getDeltaTime();
+		time+=delta;
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Inputs.instance.update();

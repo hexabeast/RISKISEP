@@ -128,12 +128,12 @@ public class GameScreen implements Screen{
 		
 		batch.begin();
 		
-		
-		Texture background = TextureManager.tex.get("background");
-		batch.draw(background,-53,-33);
+		Shaders.setWaveShader();
+		batch.draw(TextureManager.tex.get("background"),-53,-33);
+		Shaders.setDefaultShader();
 		
 		AllPays.update();
-		Shaders.setDefaultShader();
+		
 		master.update();
 		
 		batch.end();
