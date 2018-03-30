@@ -21,7 +21,7 @@ public class TextureManager {
 	
 	public static void load()
 	{
-		loadOne("background","waterocean.png");
+		loadOne("background","background.png");
 		loadOne("soldierb","soldieriskblue.png");
 		loadOne("soldierr","soldieriskred.png");
 	}

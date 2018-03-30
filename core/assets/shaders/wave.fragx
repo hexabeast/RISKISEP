@@ -9,17 +9,22 @@ uniform sampler2D u_sampler2D;
 
 void main() 
 {
-	int temx = int(u_time.x*120+v_texCoord0.x*1000);
-	int tx = mod(temx,100);
-	tx = tx*(100-tx);
 	
-	int temy = int(u_time.y*100+v_texCoord0.y*1000);
-	int ty =mod(temy,100);
-	ty = ty*(100-ty);
+	vec4 col = texture2D(u_sampler2D, v_texCoord0) * v_color;
+	float t = u_time.x*0.1;
+	t=mod(t,10);
+	t=t*(10-t);
+	col.r+=((t-12)/25)/10;
 	
-	vec2 tfinal = vec2(float(tx)/50000,float(ty)/50000);
+	t = u_time.x*0.13;
+	t=mod(t,10);
+	t=t*(10-t);
+	col.g+=((t-12)/25)/10;
 	
-	vec4 col = texture2D(u_sampler2D, v_texCoord0+tfinal) * v_color;
-
+	t = u_time.x*0.12;
+	t=mod(t,10);
+	t=t*(10-t);
+	col.b+=((t-12)/25)/10;
+	
 	gl_FragColor = col;
 }

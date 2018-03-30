@@ -4,9 +4,11 @@ package com.hexabeast.riskisep.gameboard;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.hexabeast.riskisep.GameScreen;
+import com.hexabeast.riskisep.Inputs;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class AllPays {
@@ -21,7 +23,7 @@ public class AllPays {
 		//array objects in json if you would have more components
 		for (JsonValue comp : base.get("regions"))
 		{
-			String nom = comp.getString("name");
+			String nom = comp.getString("name").replaceAll("[^a-zA-Z]+","");
 			TextureManager.loadOne(nom, "pays/"+nom+".png");
 		    int w = Integer.parseInt(comp.getString("width"))/2;
 		    int h = Integer.parseInt(comp.getString("height"))/2;
@@ -29,6 +31,38 @@ public class AllPays {
 		    int y = Integer.parseInt(comp.getString("y"))/2-30;
 		    pays.add(new Pays(pays.size(),nom,x,GameScreen.camh-y-TextureManager.tex.get(nom).getHeight()/2,w,h));
 		}
+
+		FileHandle file = Gdx.files.internal("PaysLiens.txt");
+		String text = file.readString();
+		String[] liens = text.split("\r\n");
+		
+		for(int i = 0; i<liens.length; i++)
+		{
+			String[] payss = liens[i].split(":");
+			Pays p1 = rechercheNom(payss[0].replaceAll("[^a-zA-Z]+",""));
+			Pays p2 = rechercheNom(payss[1].replaceAll("[^a-zA-Z]+",""));
+			
+			if(!p1.adjacents.contains(p2) && !p2.adjacents.contains(p1))
+			{
+				p1.adjacents.add(p2);
+				p2.adjacents.add(p1);
+			}
+			else
+			{
+				System.out.println("Erreur double lien "+liens[i]);
+			}
+			
+		}
+	}
+	
+	public static Pays rechercheNom(String st)
+	{
+		for(int i=0; i<pays.size(); i++)
+		{
+			if(pays.get(i).nom.equals(st))return pays.get(i);
+		}
+		System.out.println("Erreur pays "+st);
+		return null;
 	}
 	
 	public static void update()
@@ -44,7 +78,11 @@ public class AllPays {
 			{
 				pays.get(i).update(0);
 			}
-			if(selection != null)selection.update(1);
+			if(selection != null)
+			{
+				if(Inputs.instance.leftpress)selection.update(2);
+				else selection.update(1);
+			}
 			
 		}
 	}

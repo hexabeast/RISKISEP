@@ -32,7 +32,7 @@ public class GameMaster {
 			if(touche>=0)
 			{
 				Vector2 pos = AllPays.pays.get(touche).getRandomPos();
-				armies.get(joueuractuel).addSoldier(0, pos.x, pos.y, touche);
+				armies.get(joueuractuel).addSoldiers(1, touche);
 			}
 			
 		}

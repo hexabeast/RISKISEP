@@ -8,7 +8,7 @@ import com.hexabeast.riskisep.Main;
 public class Shaders {
 	public static ShaderProgram base;
 	public static ShaderProgram outline;
-	public static ShaderProgram green;
+	public static ShaderProgram color;
 	public static ShaderProgram wave;
 	
 	public static void loadShaders()
@@ -17,12 +17,12 @@ public class Shaders {
 		
 		base = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/passthrough.fragx"));
 		outline = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/outline.fragx"));
-		green = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/green.fragx"));
+		color = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/color.fragx"));
 		wave = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/wave.fragx"));
 		
 		if(!base.isCompiled())System.out.println("base : "+base.getLog());
 		if(!outline.isCompiled())System.out.println("outline : "+outline.getLog());
-		if(!green.isCompiled())System.out.println("green"+green.getLog());
+		if(!color.isCompiled())System.out.println("color"+color.getLog());
 		if(!wave.isCompiled())System.out.println("wave"+wave.getLog());
 		
 		setDefaultShader();
@@ -40,7 +40,18 @@ public class Shaders {
 	
 	public static void setGreenShader()
 	{
-		Main.batch.setShader(Shaders.green);
+		Main.batch.setShader(Shaders.color);
+		Shaders.color.setUniformf("rouge", 0);
+		Shaders.color.setUniformf("vert", 1);
+		Shaders.color.setUniformf("bleu", 0);
+	}
+	
+	public static void setRedShader()
+	{
+		Main.batch.setShader(Shaders.color);
+		Shaders.color.setUniformf("rouge", 1);
+		Shaders.color.setUniformf("vert", 0);
+		Shaders.color.setUniformf("bleu", 0);
 	}
 	
 	public static void setWaveShader()

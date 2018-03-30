@@ -11,24 +11,19 @@ public class Army {
 		this.team=team;
 	}
 	
-	public void addSoldier(int type, float x, float y, int pays)
+	public void addSoldiers(int n, int pays)
 	{
-		Soldier s = new Soldier(x,y,pays,team,type);
-		soldiers.add(s);
-		AllPays.pays.get(pays).occupants.add(s);
+		for(int i=0;i<n;i++)
+		{
+			Soldier s = new Soldier(pays,team);
+			soldiers.add(s);
+			AllPays.pays.get(pays).occupants.add(s);
+		}
 	}
-	
-	/*public void addSoldiers(int n, int type)
-	{
-		for(int i=0;i<n;i++)addSoldier(type);
-	}*/
 	
 	public void update()
 	{
-		for(int i=0; i<soldiers.size(); i++)
-		{
-			soldiers.get(i).update();
-		}
+
 	}
 
 }

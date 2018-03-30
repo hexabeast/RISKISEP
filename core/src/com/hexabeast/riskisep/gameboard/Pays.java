@@ -1,7 +1,11 @@
 package com.hexabeast.riskisep.gameboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,6 +27,8 @@ public class Pays {
 	public int team = 0;
 	public ArrayList<Soldier> occupants = new ArrayList<Soldier>();
 	
+	public ArrayList<Pays> adjacents = new ArrayList<Pays>();
+	
 	Pixmap pixmap;
 	
 	private float biggify = 1.02f;
@@ -40,12 +46,24 @@ public class Pays {
             texture.getTextureData().prepare();
         }
 		pixmap = texture.getTextureData().consumePixmap();
+		
 	}
+	
+	
 	
 	public void update(int select)
 	{
-		if(select == 1)
+		if(select==2)
 		{
+			Shaders.setRedShader();
+			for(int i=0; i<adjacents.size(); i++)
+			{
+				adjacents.get(i).update(0);
+			}
+		}
+		if(select >= 1)
+		{
+				
 			Shaders.setGreenShader();
 			Main.batch.draw(TextureManager.tex.get(nom),x+(w-w*biggify)/2,y+(h-h*biggify)/2,w*biggify,h*biggify);
 			Shaders.setDefaultShader();
@@ -87,27 +105,12 @@ public class Pays {
 		float posy = 0;
 		
 		boolean dedans = false;
-		int rotations = 0;
 		while(!dedans)
 		{
-			rotations+=1;
 			dedans = true;
 			posx=(float) (x+Math.random()*w);
 			posy=(float) (y+Math.random()*h);
 			if(!isTouched(posx,posy))dedans=false;
-			else
-			{
-				if(occupants.size()<10)
-				{
-					Vector2 posvec = new Vector2(posx,posy);
-					for(int i=0; i<occupants.size(); i++)
-					{
-						float otherx = occupants.get(i).x;
-						float othery = occupants.get(i).y;
-						if(new Vector2(otherx,othery).dst(posvec)<(w+h/4)/rotations)dedans=false;
-					}
-				}
-			}
 		}
 		return new Vector2(posx,posy);
 		
