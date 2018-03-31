@@ -50,8 +50,11 @@ public class Inputs implements InputProcessor{
 	
 	private static int kA;
 	private static int kW;
+	@SuppressWarnings("unused")
 	private static int kZ;
+	@SuppressWarnings("unused")
 	private static int kQ;
+	@SuppressWarnings("unused")
 	private static int kM;
 	
 	public static void setKeyboard(int k)

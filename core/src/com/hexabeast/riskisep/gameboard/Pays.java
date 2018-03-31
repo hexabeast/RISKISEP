@@ -80,12 +80,8 @@ public class Pays {
 		else if(team == 0)Main.batch.draw(TextureManager.tex.get("rondb"),numberx-25,numbery-25,50,50);
 		else if(team == 1)Main.batch.draw(TextureManager.tex.get("rondr"),numberx-25,numbery-25,50,50);
 		
-		TextureManager.fontlayout.setText(TextureManager.font,String.valueOf(occupants.size()));
-		float fw = TextureManager.fontlayout.width;
-		float fh = TextureManager.fontlayout.height;
-		
-		TextureManager.font.draw(Main.batch, String.valueOf(occupants.size()), numberx-fw/2,numbery+fh/2);
-	}
+		Main.drawfontCenter(TextureManager.font, numberx, numbery, String.valueOf(occupants.size()));
+		}
 	
 	public boolean isTouched(float xx, float yy)
 	{

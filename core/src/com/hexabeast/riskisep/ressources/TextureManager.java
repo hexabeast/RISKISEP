@@ -18,6 +18,7 @@ public class TextureManager {
 	public static Texture img;
 	
 	public static BitmapFont font;
+	public static BitmapFont fontButton;
 	public static GlyphLayout fontlayout;
 	
 	
@@ -33,7 +34,7 @@ public class TextureManager {
 	
 	public static void load()
 	{
-		loadOne("background","background.png");
+		loadOne("background","ocean.png");
 		loadOne("soldierb","soldieriskblue.png");
 		loadOne("soldierr","soldieriskred.png");
 		loadOne("rond","rond.png");
@@ -41,11 +42,14 @@ public class TextureManager {
 		loadOne("rondb","rondb.png");
 		loadOne("panneau","panneaubois.png");
 		loadOne("panneauv","panneauvert.png");
+		loadOne("blank","blank.png");
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/cartoon.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 28;
 		font = generator.generateFont(parameter);
+		parameter.size = 40;
+		fontButton = generator.generateFont(parameter);
 		generator.dispose();
 		
 		fontlayout = new GlyphLayout();

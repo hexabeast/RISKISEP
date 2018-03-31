@@ -2,8 +2,11 @@ package com.hexabeast.riskisep;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.hexabeast.riskisep.gameboard.AllPays;
 import com.hexabeast.riskisep.ressources.Shaders;
@@ -66,5 +69,22 @@ public class Main extends Game {
 		batch.dispose();
 		shapebatch.dispose();
 		TextureManager.dispose();
+	}
+	
+	public static void drawRectangle(float x, float y, float w, float h, Color col)
+	{
+		Color old = batch.getColor();
+		batch.setColor(col);
+		batch.draw(TextureManager.tex.get("blank"), x, y, w, h);
+		batch.setColor(old);
+	}
+	
+	public static void drawfontCenter(BitmapFont font, float x, float y, String text)
+	{
+		TextureManager.fontlayout.setText(TextureManager.font,text);
+		float fw = TextureManager.fontlayout.width;
+		float fh = TextureManager.fontlayout.height;
+		
+		font.draw(Main.batch,text, x-fw/2,y+fh/2);
 	}
 }

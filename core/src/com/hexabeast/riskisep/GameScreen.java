@@ -5,14 +5,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.hexabeast.riskisep.gameboard.AllPays;
 import com.hexabeast.riskisep.gameboard.GameMaster;
-import com.hexabeast.riskisep.ressources.Shaders;
-import com.hexabeast.riskisep.ressources.TextureManager;
+import com.hexabeast.riskisep.ui.AllUI;
 
 public class GameScreen implements Screen{
 	
@@ -37,6 +34,7 @@ public class GameScreen implements Screen{
 	{
 		master = new GameMaster();
 		master.beginGame(2);
+		AllUI.loadUI();
 		camera = new OrthographicCamera(camw,camh);
 		gameMouse = new Vector2();
 		InitializeCamera();
@@ -128,18 +126,9 @@ public class GameScreen implements Screen{
 		
 		batch.begin();
 		
-		Shaders.setWaveShader();
-		batch.draw(TextureManager.tex.get("background"),-90,130);
-		Shaders.setDefaultShader();
-		Main.batch.setColor(0.25f, 0.2f, 0.4f, 1);
-		batch.draw(TextureManager.tex.get("panneau"),-20,-90);
-		batch.draw(TextureManager.tex.get("panneauv"),1750,-90);
-		Main.batch.setColor(1,1,1,1);
-		
-		AllPays.update();
-		
 		master.update();
 		
+		AllUI.update();
 		batch.end();
 		
 	}
