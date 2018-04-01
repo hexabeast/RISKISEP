@@ -54,6 +54,14 @@ public class Shaders {
 		Shaders.color.setUniformf("bleu", 0);
 	}
 	
+	public static void setBlueShader()
+	{
+		Main.batch.setShader(Shaders.color);
+		Shaders.color.setUniformf("rouge", 0);
+		Shaders.color.setUniformf("vert", 0);
+		Shaders.color.setUniformf("bleu", 1);
+	}
+	
 	public static void setWaveShader()
 	{
 		

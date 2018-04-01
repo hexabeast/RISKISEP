@@ -13,7 +13,8 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class AllPays {
 	public static ArrayList<Pays> pays = new ArrayList<Pays>();
-	
+	public static Pays selection = null;
+	public static int selectiontype = 1;
 	
 	public static void loadPays()
 	{
@@ -28,7 +29,7 @@ public class AllPays {
 		    int w = Integer.parseInt(comp.getString("width"))/2;
 		    int h = Integer.parseInt(comp.getString("height"))/2;
 		    int x = Integer.parseInt(comp.getString("x"))/2-50;
-		    int y = Integer.parseInt(comp.getString("y"))/2+50;
+		    int y = Integer.parseInt(comp.getString("y"))/2+80;
 		    pays.add(new Pays(pays.size(),nom,x,GameScreen.camh-y-TextureManager.tex.get(nom).getHeight()/2,w,h));
 		}
 
@@ -78,23 +79,17 @@ public class AllPays {
 	
 	public static void update()
 	{
-		Pays selection = null;
+		
 		for(int i=0; i<pays.size(); i++)
 		{
-			if(pays.get(i).isTouched() && selection == null)
-			{
-				selection = pays.get(i);
-			}
-			else
+			if(selection != pays.get(i))
 			{
 				pays.get(i).update(0);
 			}
-			if(selection != null)
-			{
-				if(Inputs.instance.rightpress)selection.update(2);
-				else selection.update(1);
-			}
-			
+		}
+		if(selection != null)
+		{
+			selection.update(selectiontype);
 		}
 	}
 	

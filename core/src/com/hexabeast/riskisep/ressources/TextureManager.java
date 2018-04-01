@@ -48,7 +48,7 @@ public class TextureManager {
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 28;
 		font = generator.generateFont(parameter);
-		parameter.size = 40;
+		parameter.size = 35;
 		fontButton = generator.generateFont(parameter);
 		generator.dispose();
 		

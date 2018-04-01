@@ -53,15 +53,25 @@ public class Pays {
 	
 	public void update(int select)
 	{
-		if(occupants.size()>0)team = occupants.get(0).team;
+		//if(occupants.size()>0)team = occupants.get(0).team;
 		
+		if(select==3)
+		{
+			Shaders.setBlueShader();
+			for(int i=0; i<adjacents.size(); i++)
+			{
+				if(adjacents.get(i).team==team)adjacents.get(i).update(0);
+			}
+			Shaders.setDefaultShader();
+		}
 		if(select==2)
 		{
 			Shaders.setRedShader();
 			for(int i=0; i<adjacents.size(); i++)
 			{
-				adjacents.get(i).update(0);
+				if(adjacents.get(i).team!=team)adjacents.get(i).update(0);
 			}
+			Shaders.setDefaultShader();
 		}
 		if(select >= 1)
 		{

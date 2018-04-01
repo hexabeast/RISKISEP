@@ -27,9 +27,9 @@ public class Main extends Game {
 		batch = new SpriteBatch();
 		Shaders.loadShaders();
 		shapebatch = new ShapeRenderer();
-		game = new GameScreen();
 		TextureManager.load();
 		AllPays.loadPays();
+		game = new GameScreen();
 		Inputs.instance = new Inputs();
 		Gdx.input.setInputProcessor(Inputs.instance);
 	}
@@ -81,7 +81,7 @@ public class Main extends Game {
 	
 	public static void drawfontCenter(BitmapFont font, float x, float y, String text)
 	{
-		TextureManager.fontlayout.setText(TextureManager.font,text);
+		TextureManager.fontlayout.setText(font,text);
 		float fw = TextureManager.fontlayout.width;
 		float fh = TextureManager.fontlayout.height;
 		
