@@ -84,6 +84,7 @@ public class GameMaster {
 					}
 					if(Inputs.instance.leftmousedown || Inputs.instance.rightmousedown)
 					{
+						
 						boolean atk = false;
 						if(AllPays.selection!=null)
 						{
@@ -177,15 +178,15 @@ public class GameMaster {
 							armies.get(team).addSoldiersForce(1, paysdefense);
 							armies.get(team).removeSoldiers(1, paysattaque);
 						}
-						else
+						/*else
 						{
-							return attaquer(n, paysattaque, paysdefense, team);
-						}
+							return true;//attaquer(n, paysattaque, paysdefense, team);
+						}*/
 					}
 					else
 					{
 						armies.get(team).removeSoldiers(1, paysattaque);
-						return attaquer(n, paysattaque, paysdefense, team);
+						//return true;//attaquer(n, paysattaque, paysdefense, team);
 					}
 					return true;
 				}
