@@ -5,17 +5,19 @@ import java.util.Collections;
 
 import com.hexabeast.riskisep.Inputs;
 import com.hexabeast.riskisep.Main;
+import com.hexabeast.riskisep.ia.IASimple;
 import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class GameMaster {
 	public ArrayList<Army> armies = new ArrayList<Army>();
+	public ArrayList<IASimple> ias = new ArrayList<IASimple>();
 	public int njoueurs = 2;
 	public int teamactuel = 0;
 	public int phase = 0;
 	public int[] human = {1,1};
-	private int postsource=-1;
-	private int postcible = -1;
+	public int lastsource=-1;
+	public int lastcible = -1;
 	
 	public GameMaster()
 	{
@@ -28,6 +30,11 @@ public class GameMaster {
 		{
 			armies.add(new Army(i));
 		}
+		
+		for(int i=0;i<njoueurs;i++)
+		{
+			ias.add(new IASimple(i));
+		}
 		this.njoueurs = njoueurs;
 		AllPays.selection=null;
 		
@@ -37,7 +44,7 @@ public class GameMaster {
 		for(int i=0;i<AllPays.pays.size()/njoueurs;i++)
 		{
 			for(int j=0;j<njoueurs;j++)
-			armies.get(j).addSoldiersForce(1, rlist.get(i*2+j).id);
+			armies.get(j).addSoldiersForce(0, 1, rlist.get(i*2+j).id);
 		}
 	}
 	
@@ -90,18 +97,9 @@ public class GameMaster {
 						{
 							do
 							{
-								if(attaquer(1,AllPays.selection.id,touche,teamactuel))
-								{
-									postcible = touche;
-									postsource = AllPays.selection.id;
-									atk=true;
-								}
-								else
-								{
-									postsource=-1;
-									postcible=-1;
-								}
-							}while(Inputs.instance.rightmousedown && postcible!=-1);
+								atk = false;
+								if(attaquer(1,AllPays.selection.id,touche,teamactuel))atk=true;
+							}while(Inputs.instance.rightmousedown && atk);
 						}
 						if(!atk && AllPays.pays.get(touche).team==teamactuel)
 						{
@@ -130,12 +128,11 @@ public class GameMaster {
 								if(fortifier(1,AllPays.selection.id,touche,teamactuel))
 								{
 									fo=true;
-									postcible=touche;
 								}
 								else fo=false; 
 							}while(fo && Inputs.instance.rightmousedown);
 						}
-						if(postcible<0 && AllPays.pays.get(touche).team==teamactuel)
+						if(lastcible<0 && AllPays.pays.get(touche).team==teamactuel)
 						{
 							AllPays.selection=AllPays.pays.get(touche);
 							AllPays.selectiontype=3;
@@ -143,6 +140,10 @@ public class GameMaster {
 					}
 				}
 			}
+		}
+		else
+		{
+			ias.get(teamactuel).play(phase);
 		}
 		
 		
@@ -156,7 +157,7 @@ public class GameMaster {
 	{
 		if(AllPays.pays.get(paysid).team==team && armies.get(teamactuel).newsoldiers>0)
 		{
-			armies.get(teamactuel).addSoldiers(n, paysid);
+			armies.get(teamactuel).addSoldiers(0, n, paysid);
 			return true;
 		}
 		return false;
@@ -188,21 +189,25 @@ public class GameMaster {
 						armies.get(team).removeSoldiers(1, paysattaque);
 						//return true;//attaquer(n, paysattaque, paysdefense, team);
 					}
+					lastcible = paysdefense;
+					lastsource = paysattaque;
 					return true;
 				}
 					
 			}
 			
 		}
-		else if(postsource==paysattaque && postcible==paysdefense && AllPays.pays.get(paysattaque).team==team && AllPays.pays.get(paysdefense).team==team)
+		else if(lastsource==paysattaque && lastcible==paysdefense && AllPays.pays.get(paysattaque).team==team && AllPays.pays.get(paysdefense).team==team)
 		{
 			return fortifier(n, paysattaque, paysdefense, team);
 		}
+		lastsource=-1;
+		lastcible=-1;
 		return false;
 	}
 	public boolean fortifier(int n, int paysource, int paysdest, int team)
 	{
-		if(postcible<0 || postcible==paysdest)
+		if(lastcible<0 || (lastcible==paysdest && lastsource==paysource))
 		{
 			if(AllPays.pays.get(paysource).team==team && AllPays.pays.get(paysdest).team==team )
 			{
@@ -212,6 +217,8 @@ public class GameMaster {
 					{
 						armies.get(team).removeSoldiers(1, paysource);
 						armies.get(team).addSoldiersForce(1, paysdest);
+						lastcible=paysdest;
+						lastsource=paysource;
 						return true;
 					}
 						
@@ -226,8 +233,8 @@ public class GameMaster {
 		phase+=1;
 		AllPays.selection=null;
 		AllPays.selectiontype=1;
-		postsource=-1;
-		postcible=-1;
+		lastsource=-1;
+		lastcible=-1;
 		if(phase==3)
 		{
 			phase=0;

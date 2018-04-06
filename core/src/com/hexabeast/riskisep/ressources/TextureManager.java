@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -21,9 +22,7 @@ public class TextureManager {
 	public static BitmapFont fontButton;
 	public static GlyphLayout fontlayout;
 	
-	
-	
-	
+	public static ArrayList<Pixmap> unitePixmap = new ArrayList<Pixmap>();
 	
 	public static void loadOne(String name, String namefile)
 	{
@@ -32,11 +31,21 @@ public class TextureManager {
 		textures.add(temp);
 	}
 	
+	public static Pixmap loadPixMap(String nom)
+	{
+		Texture texture = TextureManager.tex.get(nom);
+		if (!texture.getTextureData().isPrepared()) {
+            texture.getTextureData().prepare();
+        }
+		return texture.getTextureData().consumePixmap();
+	}
+	
 	public static void load()
 	{
 		loadOne("background","ocean.png");
-		loadOne("soldierb","soldieriskblue.png");
-		loadOne("soldierr","soldieriskred.png");
+		loadOne("soldier","unites/rondrsoldat.png");
+		loadOne("canon","unites/rondcanon.png");
+		loadOne("cheval","unites/rondcheval.png");
 		loadOne("rond","rond.png");
 		loadOne("rondr","rondr.png");
 		loadOne("rondb","rondb.png");
@@ -53,6 +62,10 @@ public class TextureManager {
 		generator.dispose();
 		
 		fontlayout = new GlyphLayout();
+		
+		unitePixmap.add(loadPixMap("soldier"));
+		unitePixmap.add(loadPixMap("cheval"));
+		unitePixmap.add(loadPixMap("cannon"));
 		
 	}
 	

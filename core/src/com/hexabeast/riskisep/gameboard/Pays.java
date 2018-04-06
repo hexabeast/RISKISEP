@@ -23,7 +23,7 @@ public class Pays {
 	public float numbery;
 	
 	public int team = -1;
-	public ArrayList<Soldier> occupants = new ArrayList<Soldier>();
+	public ArrayList<Unite> occupants = new ArrayList<Unite>();
 	
 	public ArrayList<Pays> adjacents = new ArrayList<Pays>();
 	
@@ -41,11 +41,7 @@ public class Pays {
 		numberx = x+w/2;
 		numbery = y+h/2;
 		this.nom=nom;
-		Texture texture = TextureManager.tex.get(nom);
-		if (!texture.getTextureData().isPrepared()) {
-            texture.getTextureData().prepare();
-        }
-		pixmap = texture.getTextureData().consumePixmap();
+		pixmap = TextureManager.loadPixMap(nom);
 		
 	}
 	
@@ -85,12 +81,14 @@ public class Pays {
 			Main.batch.draw(TextureManager.tex.get(nom),x,y,w,h);
 		}
 		
+		/*
 		if(occupants.size()==0)
 		Main.batch.draw(TextureManager.tex.get("rond"),numberx-25,numbery-25,50,50);
 		else if(team == 0)Main.batch.draw(TextureManager.tex.get("rondb"),numberx-25,numbery-25,50,50);
 		else if(team == 1)Main.batch.draw(TextureManager.tex.get("rondr"),numberx-25,numbery-25,50,50);
 		
 		Main.drawfontCenter(TextureManager.font, numberx, numbery, String.valueOf(occupants.size()));
+		*/
 		}
 	
 	public boolean isTouched(float xx, float yy)

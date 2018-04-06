@@ -3,30 +3,32 @@ package com.hexabeast.riskisep.gameboard;
 import java.util.ArrayList;
 
 public class Army {
-	public ArrayList<Soldier> soldiers = new ArrayList<Soldier>();
+	public ArrayList<Unite> soldiers = new ArrayList<Unite>();
 	public int team = 0;
-	public int newsoldiers = 30;
+	public int newsoldiers = 10;
 	
 	public Army(int team)
 	{
 		this.team=team;
 	}
 	
-	public void addSoldiers(int n, int pays)
+	public void addSoldiers(int type, int n, int pays)
 	{
 		if(newsoldiers>=n)
 		{
 			newsoldiers-=n;
-			addSoldiersForce( n, pays);
+			addSoldiersForce(type, n, pays);
 		}
-		
 	}
 	
-	public void addSoldiersForce(int n, int pays)
+	public void addSoldiersForce(int type, int n, int pays)
 	{
 		for(int i=0;i<n;i++)
 		{
-			Soldier s = new Soldier(pays,team);
+			Unite s;
+			if(type==0)s = new Soldat(pays,team);
+			else if(type==1)s = new Cheval(pays,team);
+			else s = new Cannon(pays,team);
 			soldiers.add(s);
 			AllPays.pays.get(pays).occupants.add(s);
 			AllPays.pays.get(pays).team=team;
@@ -38,7 +40,7 @@ public class Army {
 		for(int i=0;i<n;i++)
 		{
 			
-			Soldier s = AllPays.pays.get(pays).occupants.get(0);
+			Unite s = AllPays.pays.get(pays).occupants.get(0);
 			soldiers.remove(s);
 			AllPays.pays.get(pays).occupants.remove(0);
 			if(AllPays.pays.get(pays).occupants.size()==0)AllPays.pays.get(pays).team=-1;
@@ -47,7 +49,10 @@ public class Army {
 	
 	public void update()
 	{
-
+		for(int i=0;i<soldiers.size();i++)
+		{
+			soldiers.get(i).update();
+		}
 	}
 	
 	public ArrayList<Pays> getCountries()

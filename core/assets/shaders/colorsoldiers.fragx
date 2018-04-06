@@ -1,0 +1,28 @@
+varying vec4 v_color;
+varying vec2 v_texCoord0;
+uniform vec2 u_invScreenSize;
+uniform vec3 u_color;
+
+uniform float rouge;
+uniform float vert;
+uniform float bleu;
+
+
+uniform sampler2D u_sampler2D;
+
+void main() 
+{
+	vec4 col = texture2D(u_sampler2D, v_texCoord0) * v_color;
+	vec4 green = vec4(u_color.x,u_color.y,u_color.z,col.w);
+	
+	if(green.x<0.9 || green.y<0.9 || green.z<0.9)
+	{
+		green.x = rouge;
+		green.y = vert;
+		green.z = bleu;
+	}
+
+	
+
+	gl_FragColor = green;
+}
