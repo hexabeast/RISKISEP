@@ -13,9 +13,9 @@ uniform sampler2D u_sampler2D;
 void main() 
 {
 	vec4 col = texture2D(u_sampler2D, v_texCoord0) * v_color;
-	vec4 green = vec4(u_color.x,u_color.y,u_color.z,col.w);
+	vec4 green = vec4(col.x,col.y,col.z,col.w);
 	
-	if(green.x<0.9 || green.y<0.9 || green.z<0.9)
+	if(col.x<0.8 || col.y<0.8 || col.z<0.8)
 	{
 		green.x = rouge;
 		green.y = vert;

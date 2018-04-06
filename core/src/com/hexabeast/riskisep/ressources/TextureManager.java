@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.math.Rectangle;
 
 public class TextureManager { 
 	private static ArrayList<Texture> textures = new ArrayList<Texture>();
@@ -40,10 +42,30 @@ public class TextureManager {
 		return texture.getTextureData().consumePixmap();
 	}
 	
+	public static boolean isPixTouched(float x, float y, float w, float h, Texture textu, Pixmap pix, float xx, float yy)
+	{
+		Rectangle spriteBounds = new Rectangle(x,y,w,h);
+	    if (spriteBounds.contains(xx,yy)) {
+	        
+
+	        int spriteLocalX = (int) (xx - x);
+	        
+	        int spriteLocalY = (int) ((yy) -y);
+
+	        int textureLocalX = spriteLocalX*2;
+	        int textureLocalY = spriteLocalY*2;
+	        
+	        Color col = new Color(pix.getPixel(textureLocalX, textu.getHeight()-textureLocalY));
+	        if(col.a<0.5)return false;
+	        return true;
+	    }
+	    return false;
+	}
+	
 	public static void load()
 	{
 		loadOne("background","ocean.png");
-		loadOne("soldier","unites/rondrsoldat.png");
+		loadOne("soldat","unites/rondrsoldat.png");
 		loadOne("canon","unites/rondcanon.png");
 		loadOne("cheval","unites/rondcheval.png");
 		loadOne("rond","rond.png");
@@ -63,9 +85,9 @@ public class TextureManager {
 		
 		fontlayout = new GlyphLayout();
 		
-		unitePixmap.add(loadPixMap("soldier"));
+		unitePixmap.add(loadPixMap("soldat"));
 		unitePixmap.add(loadPixMap("cheval"));
-		unitePixmap.add(loadPixMap("cannon"));
+		unitePixmap.add(loadPixMap("canon"));
 		
 	}
 	

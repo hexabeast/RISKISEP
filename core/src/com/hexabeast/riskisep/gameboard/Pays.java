@@ -1,13 +1,14 @@
 package com.hexabeast.riskisep.gameboard;
 
 import java.util.ArrayList;
-import com.badlogic.gdx.graphics.Color;
+import java.util.Collections;
+import java.util.Comparator;
+
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.Main;
+import com.hexabeast.riskisep.Tools;
 import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
@@ -93,22 +94,7 @@ public class Pays {
 	
 	public boolean isTouched(float xx, float yy)
 	{
-		Rectangle spriteBounds = new Rectangle(x,y,w,h);
-	    if (spriteBounds.contains(xx,yy)) {
-	        
-
-	        int spriteLocalX = (int) (xx - x);
-	        
-	        int spriteLocalY = (int) ((yy) -y);
-
-	        int textureLocalX = spriteLocalX*2;
-	        int textureLocalY = spriteLocalY*2;
-	        
-	        Color col = new Color(pixmap.getPixel(textureLocalX, TextureManager.tex.get(nom).getHeight()-textureLocalY));
-	        if(col.a<0.5)return false;
-	        return true;
-	    }
-	    return false;
+		return TextureManager.isPixTouched(x,y,w,h,TextureManager.tex.get(nom),pixmap,xx,yy);
 	}
 	
 	public boolean isTouched()
@@ -118,22 +104,43 @@ public class Pays {
 	
 	public ArrayList<Unite> getChallengers()
 	{
-		int size = Math.min(3, occupants.size());
+		int size = Math.min(2, occupants.size());
 		ArrayList<Unite> challengers = new ArrayList<Unite>();
-		for(int i=0;i<size;i++)challengers.add(occupants.get(i));
 		
 		for(int i=0;i<occupants.size();i++)
 		{
 			for(int j=0;j<size;j++)
 			{
-				if(occupants.get(i).def>challengers.get(j).def)
+				if(challengers.size()>j)
 				{
-					challengers.add(j, occupants.get(i));
-					challengers.remove(challengers.size()-1);
+					if(occupants.get(i).def<challengers.get(j).def)
+					{
+						challengers.add(j, occupants.get(i));
+						if(challengers.size()>size)challengers.remove(challengers.size()-1);
+						break;
+					}
+				}
+				else
+				{
+					challengers.add(occupants.get(i));
 					break;
 				}
 			}
 		}
+		for(int i=0;i<size;i++)
+		{
+			challengers.get(i).scoreactuel=challengers.get(i).puissance+Tools.lancerDe();
+		}
+		
+		Collections.sort(challengers, new Comparator<Unite>() {
+	        @Override
+	        public int compare(Unite o1, Unite o2) {
+	        	int basescore =o2.scoreactuel*1000-o1.scoreactuel*1000;
+	        	int departage =o1.def-o2.def;
+	            return basescore+departage;
+	        }
+	    });
+		
 		return challengers;
 	}
 	

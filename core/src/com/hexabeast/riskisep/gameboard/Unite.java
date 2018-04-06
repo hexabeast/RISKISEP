@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hexabeast.riskisep.Main;
+import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
 public abstract class Unite {
@@ -27,6 +28,9 @@ public abstract class Unite {
 	
 	public float centery = 15;
 	
+	public int scoreactuel = 0;
+	public int mvtactuel = 0;
+	
 	public Unite(int id, int pays, int team)
 	{
 		this.id=id;
@@ -45,6 +49,13 @@ public abstract class Unite {
 	
 	public void update()
 	{
+		Shaders.setSoldierTeamShader(team);
 		Main.batch.draw(tex, x-w/2, y-centery, w,h);
+		Shaders.setDefaultShader();
+	}
+	
+	public boolean isTouched(float xx, float yy)
+	{
+		return TextureManager.isPixTouched(x,y,w,h,tex,pixmap,xx,yy);
 	}
 }

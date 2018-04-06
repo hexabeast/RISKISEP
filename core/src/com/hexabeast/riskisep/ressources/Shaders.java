@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
+import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.Main;
+import com.hexabeast.riskisep.gameboard.GameMaster;
 import com.hexabeast.riskisep.ui.AllUI;
 
 public class Shaders {
@@ -64,15 +66,15 @@ public class Shaders {
 		Main.batch.setShader(Shaders.colorsoldiers);
 		if(team==-1)
 		{
-			Shaders.color.setUniformf("rouge", 0.5f);
-			Shaders.color.setUniformf("vert", 0.5f);
-			Shaders.color.setUniformf("bleu",  0.5f);
+			Shaders.colorsoldiers.setUniformf("rouge", 0.5f);
+			Shaders.colorsoldiers.setUniformf("vert", 0.5f);
+			Shaders.colorsoldiers.setUniformf("bleu",  0.5f);
 		}
 		else
 		{
-			Shaders.color.setUniformf("rouge", AllUI.teamcol[team].r);
-			Shaders.color.setUniformf("vert", AllUI.teamcol[team].g);
-			Shaders.color.setUniformf("bleu", AllUI.teamcol[team].b);
+			Shaders.colorsoldiers.setUniformf("rouge", GameMaster.teamcol[team].r);
+			Shaders.colorsoldiers.setUniformf("vert", GameMaster.teamcol[team].g);
+			Shaders.colorsoldiers.setUniformf("bleu", GameMaster.teamcol[team].b);
 		}
 		
 	}

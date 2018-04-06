@@ -54,12 +54,16 @@ public class Army {
 	
 	public void transferSoldiers(int id, int paysdest)
 	{
-		Unite s = GameScreen.master.soldiersmap.get(String.valueOf(id));
-		Pays pays = AllPays.pays.get(s.pays); //Pays
-		pays.occupants.remove(s);
-		AllPays.pays.get(paysdest).occupants.add(s);
-		AllPays.pays.get(paysdest).team=team;
-		if(AllPays.pays.get(paysdest).occupants.size()==0)AllPays.pays.get(paysdest).team=-1;
+		if(GameScreen.master.soldiersmap.containsKey(String.valueOf(id)))
+		{
+			Unite s = GameScreen.master.soldiersmap.get(String.valueOf(id));
+			s.mvtactuel-=1;
+			Pays pays = AllPays.pays.get(s.pays); //Pays
+			pays.occupants.remove(s);
+			AllPays.pays.get(paysdest).occupants.add(s);
+			AllPays.pays.get(paysdest).team=team;
+			if(AllPays.pays.get(paysdest).occupants.size()==0)AllPays.pays.get(paysdest).team=-1;
+		}
 	}
 	
 	public void update()

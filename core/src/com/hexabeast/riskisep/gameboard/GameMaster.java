@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
 import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.Inputs;
 import com.hexabeast.riskisep.Main;
@@ -20,14 +21,14 @@ public class GameMaster {
 	public ArrayList<IASimple> ias = new ArrayList<IASimple>();
 	public Map<String, Unite> soldiersmap = new HashMap<String, Unite>();
 	
+	public static Color[] teamcol = {new Color(0,0,1,1),new Color(1,0,0,1),new Color(0,1,0,1),new Color(1,1,0,1)};
+	
 	public int curid = 0;
 	
 	public int njoueurs = 2;
 	public int teamactuel = 0;
 	public int phase = 0;
 	public int[] human = {1,1};
-	public int lastsource=-1;
-	public int lastcible = -1;
 	
 	public GameMaster()
 	{
@@ -74,7 +75,7 @@ public class GameMaster {
 		if(human[teamactuel]==1)
 		{
 			int touche = AllPays.paysTouched();
-			if(phase==0)
+			/*if(phase==0)
 			{
 				if(touche>=0)
 				{
@@ -149,7 +150,7 @@ public class GameMaster {
 						}
 					}
 				}
-			}
+			}*/
 		}
 		else
 		{
@@ -180,7 +181,7 @@ public class GameMaster {
 			if(AllPays.pays.get(paysattaque).adjacents.contains(AllPays.pays.get(paysdefense)))
 			{
 				boolean troopsok = true;
-				if(units.length>=0 && units.length<3)
+				if(units.length<0 || units.length>=3)
 				{
 					troopsok = false;
 				}
@@ -190,82 +191,83 @@ public class GameMaster {
 					for(int i=0;i<units.length;i++)
 					{
 						Unite unitreal = GameScreen.master.soldiersmap.get(String.valueOf(units[i]));
-						if(unitreal.team != team || unitreal.pays != paysattaque)troopsok = false;
+						if(unitreal.mvtactuel <= 0 ||unitreal.team != team || unitreal.pays != paysattaque)troopsok = false;
+						
+						unitreal.scoreactuel=unitreal.puissance+Tools.lancerDe();
 						unitsreal.add(unitreal);
 					}
 				}
 				Collections.sort(unitsreal, new Comparator<Unite>() {
 			        @Override
 			        public int compare(Unite o1, Unite o2) {
-			            return o1.att-o2.att;
+			        	int basescore =o2.scoreactuel*1000-o1.scoreactuel*1000;
+			        	int departage =o1.att-o2.att;
+			            return basescore+departage;
 			        }
 			    });
 				ArrayList<Unite> challengers = AllPays.pays.get(paysdefense).getChallengers();
 				if(troopsok)
 				{
-					int lancer = Tools.lancerDe();
-					if()
+					int nbcombats = Math.max(challengers.size(), unitsreal.size());
+					for(int i=0;i<nbcombats;i++)
 					{
-						armies.get(AllPays.pays.get(paysdefense).team).removeSoldiers(1, paysdefense);
-						if(AllPays.pays.get(paysdefense).occupants.size()==0)
+						if(challengers.get(i).scoreactuel>unitsreal.get(i).scoreactuel)
 						{
-							armies.get(team).addSoldiersForce(1, paysdefense);
-							armies.get(team).removeSoldiers(1, paysattaque);
+							armies.get(teamactuel).removeSoldier(unitsreal.get(i).id);
 						}
-						/*else
+						else
 						{
-							return true;//attaquer(n, paysattaque, paysdefense, team);
-						}*/
+							armies.get(AllPays.pays.get(paysdefense).team).removeSoldier(challengers.get(i).id);
+						}
 					}
-					else
+					if(AllPays.pays.get(paysdefense).occupants.size()==0)
 					{
-						armies.get(team).removeSoldiers(1, paysattaque);
-						//return true;//attaquer(n, paysattaque, paysdefense, team);
+						for(int i=0;i<unitsreal.size();i++)armies.get(teamactuel).transferSoldiers(unitsreal.get(i).id, paysdefense);
 					}
-					lastcible = paysdefense;
-					lastsource = paysattaque;
 					return true;
 				}
 			}
 		}
-		else if(lastsource==paysattaque && lastcible==paysdefense && AllPays.pays.get(paysattaque).team==team && AllPays.pays.get(paysdefense).team==team)
-		{
-			return fortifier(n, paysattaque, paysdefense, team);
-		}
-		lastsource=-1;
-		lastcible=-1;
 		return false;
 	}
-	public boolean fortifier(int n, int paysource, int paysdest, int team)
+	public boolean fortifier(int n, int paysource, int paysdest, int team, int[] units)
 	{
-		if(lastcible<0 || (lastcible==paysdest && lastsource==paysource))
+		if(AllPays.pays.get(paysource).team==team && AllPays.pays.get(paysdest).team==team )
 		{
-			if(AllPays.pays.get(paysource).team==team && AllPays.pays.get(paysdest).team==team )
+			if(AllPays.pays.get(paysource).adjacents.contains(AllPays.pays.get(paysdest)))
 			{
-				if(AllPays.pays.get(paysource).adjacents.contains(AllPays.pays.get(paysdest)))
+				boolean troopsok = true;
+				
+				for(int i=0;i<units.length;i++)
 				{
-					if(AllPays.pays.get(paysource).occupants.size()>1)
-					{
-						armies.get(team).removeSoldiers(1, paysource);
-						armies.get(team).addSoldiersForce(1, paysdest);
-						lastcible=paysdest;
-						lastsource=paysource;
-						return true;
-					}
-						
+					Unite unitreal = GameScreen.master.soldiersmap.get(String.valueOf(units[i]));
+					if(unitreal.mvtactuel <= 0 ||unitreal.team != team || unitreal.pays != paysource)troopsok = false;
 				}
 				
+				if(troopsok)
+				{
+					for(int i=0;i<units.length;i++)armies.get(teamactuel).transferSoldiers(units[i], paysdest);
+					return true;
+				}
+					
 			}
+			
 		}
 		return false;
 	}
 	public void nextPhase()
 	{
+		for(int i=0;i<armies.size();i++)
+		{
+			for(int j=0;j<armies.get(i).soldiers.size();j++)
+			{
+				armies.get(i).soldiers.get(j).scoreactuel=0;
+				armies.get(i).soldiers.get(j).mvtactuel=armies.get(i).soldiers.get(j).mvt;
+			}
+		}
 		phase+=1;
 		AllPays.selection=null;
 		AllPays.selectiontype=1;
-		lastsource=-1;
-		lastcible=-1;
 		if(phase==3)
 		{
 			phase=0;
