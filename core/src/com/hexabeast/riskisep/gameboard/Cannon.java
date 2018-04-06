@@ -4,8 +4,8 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class Cannon extends Unite {
 
-	public Cannon(int pays, int team) {
-		super(pays, team);
+	public Cannon(int id, int pays, int team) {
+		super(id, pays, team);
 		type=2;
 		cout=7;
 		puissance=4;

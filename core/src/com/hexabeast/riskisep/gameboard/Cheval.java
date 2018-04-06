@@ -4,8 +4,8 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class Cheval extends Unite {
 
-	public Cheval(int pays, int team) {
-		super(pays, team);
+	public Cheval(int id,int pays, int team) {
+		super(id, pays, team);
 		type=1;
 		cout=3;
 		puissance=2;

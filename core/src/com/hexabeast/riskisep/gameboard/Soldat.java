@@ -4,8 +4,8 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class Soldat extends Unite {
 
-	public Soldat(int pays, int team) {
-		super(pays, team);
+	public Soldat(int id, int pays, int team) {
+		super(id,pays, team);
 		type=0;
 		cout=1;
 		puissance=1;

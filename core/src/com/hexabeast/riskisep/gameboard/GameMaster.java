@@ -1,10 +1,16 @@
 package com.hexabeast.riskisep.gameboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.Inputs;
 import com.hexabeast.riskisep.Main;
+import com.hexabeast.riskisep.Tools;
 import com.hexabeast.riskisep.ia.IASimple;
 import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
@@ -12,6 +18,10 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 public class GameMaster {
 	public ArrayList<Army> armies = new ArrayList<Army>();
 	public ArrayList<IASimple> ias = new ArrayList<IASimple>();
+	public Map<String, Unite> soldiersmap = new HashMap<String, Unite>();
+	
+	public int curid = 0;
+	
 	public int njoueurs = 2;
 	public int teamactuel = 0;
 	public int phase = 0;
@@ -163,15 +173,38 @@ public class GameMaster {
 		return false;
 	}
 	
-	public boolean attaquer(int n, int paysattaque, int paysdefense, int team)
+	public boolean attaquer(int n, int paysattaque, int paysdefense, int team, int[] units)
 	{
 		if(AllPays.pays.get(paysattaque).team==team && AllPays.pays.get(paysdefense).team!=team )
 		{
 			if(AllPays.pays.get(paysattaque).adjacents.contains(AllPays.pays.get(paysdefense)))
 			{
-				if(AllPays.pays.get(paysattaque).occupants.size()>1)
+				boolean troopsok = true;
+				if(units.length>=0 && units.length<3)
 				{
-					if(Math.random()>0.5)
+					troopsok = false;
+				}
+				ArrayList<Unite> unitsreal = new ArrayList<Unite>();
+				if(troopsok)
+				{
+					for(int i=0;i<units.length;i++)
+					{
+						Unite unitreal = GameScreen.master.soldiersmap.get(String.valueOf(units[i]));
+						if(unitreal.team != team || unitreal.pays != paysattaque)troopsok = false;
+						unitsreal.add(unitreal);
+					}
+				}
+				Collections.sort(unitsreal, new Comparator<Unite>() {
+			        @Override
+			        public int compare(Unite o1, Unite o2) {
+			            return o1.att-o2.att;
+			        }
+			    });
+				ArrayList<Unite> challengers = AllPays.pays.get(paysdefense).getChallengers();
+				if(troopsok)
+				{
+					int lancer = Tools.lancerDe();
+					if()
 					{
 						armies.get(AllPays.pays.get(paysdefense).team).removeSoldiers(1, paysdefense);
 						if(AllPays.pays.get(paysdefense).occupants.size()==0)
@@ -193,9 +226,7 @@ public class GameMaster {
 					lastsource = paysattaque;
 					return true;
 				}
-					
 			}
-			
 		}
 		else if(lastsource==paysattaque && lastcible==paysdefense && AllPays.pays.get(paysattaque).team==team && AllPays.pays.get(paysdefense).team==team)
 		{

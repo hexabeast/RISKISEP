@@ -1,9 +1,14 @@
 package com.hexabeast.riskisep.gameboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.hexabeast.riskisep.GameScreen;
 
 public class Army {
 	public ArrayList<Unite> soldiers = new ArrayList<Unite>();
+	
 	public int team = 0;
 	public int newsoldiers = 10;
 	
@@ -26,25 +31,35 @@ public class Army {
 		for(int i=0;i<n;i++)
 		{
 			Unite s;
-			if(type==0)s = new Soldat(pays,team);
-			else if(type==1)s = new Cheval(pays,team);
-			else s = new Cannon(pays,team);
+			if(type==0)s = new Soldat(GameScreen.master.curid, pays,team);
+			else if(type==1)s = new Cheval(GameScreen.master.curid, pays,team);
+			else s = new Cannon(GameScreen.master.curid, pays,team);
 			soldiers.add(s);
+			GameScreen.master.soldiersmap.put(String.valueOf(GameScreen.master.curid), s);
 			AllPays.pays.get(pays).occupants.add(s);
 			AllPays.pays.get(pays).team=team;
+			GameScreen.master.curid++;
 		}
 	}
 	
-	public void removeSoldiers(int n, int pays)
+	public void removeSoldier(int id)
 	{
-		for(int i=0;i<n;i++)
-		{
-			
-			Unite s = AllPays.pays.get(pays).occupants.get(0);
-			soldiers.remove(s);
-			AllPays.pays.get(pays).occupants.remove(0);
-			if(AllPays.pays.get(pays).occupants.size()==0)AllPays.pays.get(pays).team=-1;
-		}
+		Unite s = GameScreen.master.soldiersmap.get(String.valueOf(id));
+		Pays pays = AllPays.pays.get(s.pays); //Pays
+		GameScreen.master.soldiersmap.remove(String.valueOf(s.id));
+		soldiers.remove(s);
+		pays.occupants.remove(s);
+		if(pays.occupants.size()==0)pays.team=-1;
+	}
+	
+	public void transferSoldiers(int id, int paysdest)
+	{
+		Unite s = GameScreen.master.soldiersmap.get(String.valueOf(id));
+		Pays pays = AllPays.pays.get(s.pays); //Pays
+		pays.occupants.remove(s);
+		AllPays.pays.get(paysdest).occupants.add(s);
+		AllPays.pays.get(paysdest).team=team;
+		if(AllPays.pays.get(paysdest).occupants.size()==0)AllPays.pays.get(paysdest).team=-1;
 	}
 	
 	public void update()

@@ -116,6 +116,27 @@ public class Pays {
 	    return isTouched(GameScreen.gameMouse.x,GameScreen.gameMouse.y);
 	}
 	
+	public ArrayList<Unite> getChallengers()
+	{
+		int size = Math.min(3, occupants.size());
+		ArrayList<Unite> challengers = new ArrayList<Unite>();
+		for(int i=0;i<size;i++)challengers.add(occupants.get(i));
+		
+		for(int i=0;i<occupants.size();i++)
+		{
+			for(int j=0;j<size;j++)
+			{
+				if(occupants.get(i).def>challengers.get(j).def)
+				{
+					challengers.add(j, occupants.get(i));
+					challengers.remove(challengers.size()-1);
+					break;
+				}
+			}
+		}
+		return challengers;
+	}
+	
 	public Vector2 getRandomPos()
 	{
 		float posx = 0;
