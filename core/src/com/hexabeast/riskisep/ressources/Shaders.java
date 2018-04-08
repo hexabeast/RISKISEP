@@ -1,13 +1,9 @@
 package com.hexabeast.riskisep.ressources;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
-import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.Main;
 import com.hexabeast.riskisep.gameboard.GameMaster;
-import com.hexabeast.riskisep.ui.AllUI;
 
 public class Shaders {
 	public static ShaderProgram base;

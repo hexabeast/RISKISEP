@@ -8,7 +8,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.hexabeast.riskisep.GameScreen;
-import com.hexabeast.riskisep.Inputs;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class AllPays {

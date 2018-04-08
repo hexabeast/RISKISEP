@@ -1,8 +1,8 @@
 package com.hexabeast.riskisep.gameboard;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.hexabeast.riskisep.GameScreen;
 
@@ -68,6 +68,13 @@ public class Army {
 	
 	public void update()
 	{
+		Collections.sort(soldiers, new Comparator<Unite>() {
+	        @Override
+	        public int compare(Unite o1, Unite o2) {
+	        	int posy =(int) ((o2.y-o1.y)*1000);
+	            return posy;
+	        }
+		});
 		for(int i=0;i<soldiers.size();i++)
 		{
 			soldiers.get(i).update();

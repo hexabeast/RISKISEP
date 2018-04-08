@@ -1,7 +1,6 @@
 package com.hexabeast.riskisep.gameboard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -29,6 +28,9 @@ public class GameMaster {
 	public int teamactuel = 0;
 	public int phase = 0;
 	public int[] human = {1,1};
+	
+	public ArrayList<Integer> selectedUnits = new ArrayList<Integer>();
+	public int lastPays = -1;
 	
 	public GameMaster()
 	{
@@ -59,6 +61,19 @@ public class GameMaster {
 		}
 	}
 	
+	public int unitTouched()
+	{
+		int touch = -1;
+		for(int i=0;i<armies.size();i++)
+		{
+			for(int j=0;j<armies.get(i).soldiers.size();j++)
+			{
+				if(armies.get(i).soldiers.get(j).isTouched(GameScreen.gameMouse.x,GameScreen.gameMouse.y))touch=armies.get(i).soldiers.get(j).id;
+			}
+		}
+		return touch;
+	}
+	
 	public void update()
 	{
 		
@@ -75,7 +90,8 @@ public class GameMaster {
 		if(human[teamactuel]==1)
 		{
 			int touche = AllPays.paysTouched();
-			/*if(phase==0)
+			int unitouche = unitTouched();
+			if(phase==0)
 			{
 				if(touche>=0)
 				{
@@ -120,7 +136,7 @@ public class GameMaster {
 					}
 				}
 			}
-			else if(phase==2)
+			/*else if(phase==2)
 			{
 				if(touche>=0)
 				{
@@ -174,23 +190,23 @@ public class GameMaster {
 		return false;
 	}
 	
-	public boolean attaquer(int n, int paysattaque, int paysdefense, int team, int[] units)
+	public boolean attaquer(int n, int paysattaque, int paysdefense, int team, ArrayList<Unite> units)
 	{
 		if(AllPays.pays.get(paysattaque).team==team && AllPays.pays.get(paysdefense).team!=team )
 		{
 			if(AllPays.pays.get(paysattaque).adjacents.contains(AllPays.pays.get(paysdefense)))
 			{
 				boolean troopsok = true;
-				if(units.length<0 || units.length>=3)
+				if(units.size()<0 || units.size()>=3)
 				{
 					troopsok = false;
 				}
 				ArrayList<Unite> unitsreal = new ArrayList<Unite>();
 				if(troopsok)
 				{
-					for(int i=0;i<units.length;i++)
+					for(int i=0;i<units.size();i++)
 					{
-						Unite unitreal = GameScreen.master.soldiersmap.get(String.valueOf(units[i]));
+						Unite unitreal = GameScreen.master.soldiersmap.get(String.valueOf(units.get(i)));
 						if(unitreal.mvtactuel <= 0 ||unitreal.team != team || unitreal.pays != paysattaque)troopsok = false;
 						
 						unitreal.scoreactuel=unitreal.puissance+Tools.lancerDe();
@@ -257,6 +273,8 @@ public class GameMaster {
 	}
 	public void nextPhase()
 	{
+		selectedUnits.clear();
+		lastPays = -1;
 		for(int i=0;i<armies.size();i++)
 		{
 			for(int j=0;j<armies.get(i).soldiers.size();j++)
