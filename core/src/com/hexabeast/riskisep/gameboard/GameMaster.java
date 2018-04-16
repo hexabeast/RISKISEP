@@ -29,7 +29,7 @@ public class GameMaster {
 	public int phase = 0;
 	public int[] human = {1,1};
 	
-	public ArrayList<Integer> selectedUnits = new ArrayList<Integer>();
+	public ArrayList<Unite> selectedUnits = new ArrayList<Unite>();
 	public int lastPays = -1;
 	
 	public GameMaster()
@@ -61,14 +61,14 @@ public class GameMaster {
 		}
 	}
 	
-	public int unitTouched()
+	public Unite unitTouched()
 	{
-		int touch = -1;
+		Unite touch = null;
 		for(int i=0;i<armies.size();i++)
 		{
 			for(int j=0;j<armies.get(i).soldiers.size();j++)
 			{
-				if(armies.get(i).soldiers.get(j).isTouched(GameScreen.gameMouse.x,GameScreen.gameMouse.y))touch=armies.get(i).soldiers.get(j).id;
+				if(armies.get(i).soldiers.get(j).isTouched(GameScreen.gameMouse.x,GameScreen.gameMouse.y))touch=armies.get(i).soldiers.get(j);
 			}
 		}
 		return touch;
@@ -85,12 +85,14 @@ public class GameMaster {
 		Main.batch.draw(TextureManager.tex.get("panneauv"),1750,-90);
 		Main.batch.setColor(1,1,1,1);
 		
-		AllPays.update();
+		AllPays.update(teamactuel);
+		
+		AllPays.selectiontype=1;
 		
 		if(human[teamactuel]==1)
 		{
 			int touche = AllPays.paysTouched();
-			int unitouche = unitTouched();
+			Unite unitouche = unitTouched();
 			if(phase==0)
 			{
 				if(touche>=0)
@@ -109,64 +111,46 @@ public class GameMaster {
 			}
 			else if(phase==1)
 			{
-				if(touche>=0)
+
+				if(selectedUnits.size()>0)
 				{
-					if(AllPays.selection==null || AllPays.selectiontype==1)
+					AllPays.selection=AllPays.pays.get(selectedUnits.get(0).pays);
+					AllPays.selectiontype=3;
+				}
+				else if(touche>=0)
+				{
+					AllPays.selection=AllPays.pays.get(touche);
+					AllPays.selectiontype=3;
+				}
+				if(Inputs.instance.leftmousedown || Inputs.instance.rightmousedown)
+				{
+					
+					//boolean atk = false;
+					if(unitouche!=null && unitouche.team==teamactuel && unitouche.mvtactuel>0)
 					{
-						AllPays.selection=AllPays.pays.get(touche);
-						AllPays.selectiontype=1;
+						if(selectedUnits.size()==0 || selectedUnits.get(0).pays == unitouche.pays)
+						{
+							if(!selectedUnits.contains(unitouche))selectedUnits.add(unitouche);
+							else selectedUnits.remove(unitouche);
+							if(selectedUnits.size()>3)selectedUnits.remove(0);
+						}
+						else
+						{
+							selectedUnits.clear();
+							selectedUnits.add(unitouche);
+						}
+						touche=-1;
 					}
-					if(Inputs.instance.leftmousedown || Inputs.instance.rightmousedown)
+					if(selectedUnits.size()>0 && touche>=0 && AllPays.pays.get(touche).team != teamactuel)
 					{
-						
-						boolean atk = false;
-						if(AllPays.selection!=null)
-						{
-							do
-							{
-								atk = false;
-								if(attaquer(1,AllPays.selection.id,touche,teamactuel))atk=true;
-							}while(Inputs.instance.rightmousedown && atk);
-						}
-						if(!atk && AllPays.pays.get(touche).team==teamactuel)
-						{
-							AllPays.selection=AllPays.pays.get(touche);
-							AllPays.selectiontype=2;
-						}
+						if(attaquer(selectedUnits.get(0).pays,touche,teamactuel,selectedUnits))selectedUnits.clear();
+					}
+					if(selectedUnits.size()>0 && touche>=0 && AllPays.pays.get(touche).team == teamactuel)
+					{
+						if(fortifier(selectedUnits.get(0).pays,touche,teamactuel,selectedUnits))selectedUnits.clear();
 					}
 				}
 			}
-			/*else if(phase==2)
-			{
-				if(touche>=0)
-				{
-					if(AllPays.selection==null || AllPays.selectiontype==1)
-					{
-						AllPays.selection=AllPays.pays.get(touche);
-						AllPays.selectiontype=1;
-					}
-					if(Inputs.instance.leftmousedown || Inputs.instance.rightmousedown)
-					{
-						if(AllPays.selection!=null && AllPays.selectiontype==3)
-						{
-							boolean fo = false;
-							do
-							{
-								if(fortifier(1,AllPays.selection.id,touche,teamactuel))
-								{
-									fo=true;
-								}
-								else fo=false; 
-							}while(fo && Inputs.instance.rightmousedown);
-						}
-						if(lastcible<0 && AllPays.pays.get(touche).team==teamactuel)
-						{
-							AllPays.selection=AllPays.pays.get(touche);
-							AllPays.selectiontype=3;
-						}
-					}
-				}
-			}*/
 		}
 		else
 		{
@@ -177,6 +161,10 @@ public class GameMaster {
 		for(int i=0;i<armies.size();i++)
 		{
 			armies.get(i).update();
+		}
+		for(int i=0;i<selectedUnits.size();i++)
+		{
+			selectedUnits.get(i).updatehighlight();
 		}
 	}
 	
@@ -190,29 +178,20 @@ public class GameMaster {
 		return false;
 	}
 	
-	public boolean attaquer(int n, int paysattaque, int paysdefense, int team, ArrayList<Unite> units)
+	public boolean attaquer(int paysattaque, int paysdefense, int team, ArrayList<Unite> units)
 	{
 		if(AllPays.pays.get(paysattaque).team==team && AllPays.pays.get(paysdefense).team!=team )
 		{
 			if(AllPays.pays.get(paysattaque).adjacents.contains(AllPays.pays.get(paysdefense)))
 			{
-				boolean troopsok = true;
-				if(units.size()<0 || units.size()>=3)
+				if(units.size()<=0 || units.size()>3 || AllPays.pays.get(paysattaque).occupants.size()<units.size()+1)
 				{
-					troopsok = false;
+					return false;
 				}
 				ArrayList<Unite> unitsreal = new ArrayList<Unite>();
-				if(troopsok)
-				{
-					for(int i=0;i<units.size();i++)
-					{
-						Unite unitreal = GameScreen.master.soldiersmap.get(String.valueOf(units.get(i)));
-						if(unitreal.mvtactuel <= 0 ||unitreal.team != team || unitreal.pays != paysattaque)troopsok = false;
-						
-						unitreal.scoreactuel=unitreal.puissance+Tools.lancerDe();
-						unitsreal.add(unitreal);
-					}
-				}
+				
+				
+				
 				Collections.sort(unitsreal, new Comparator<Unite>() {
 			        @Override
 			        public int compare(Unite o1, Unite o2) {
@@ -222,9 +201,19 @@ public class GameMaster {
 			        }
 			    });
 				ArrayList<Unite> challengers = AllPays.pays.get(paysdefense).getChallengers();
+				
+				boolean troopsok = true;
+				for(int i=0;i<units.size();i++)
+				{
+					Unite unitreal = units.get(i);
+					if(unitreal.mvtactuel <= 0 ||unitreal.team != team || unitreal.pays != paysattaque)troopsok = false;
+					
+					unitreal.scoreactuel=unitreal.puissance+Tools.lancerDe();
+					unitsreal.add(unitreal);
+				}
 				if(troopsok)
 				{
-					int nbcombats = Math.max(challengers.size(), unitsreal.size());
+					int nbcombats = Math.min(challengers.size(), unitsreal.size());
 					for(int i=0;i<nbcombats;i++)
 					{
 						if(challengers.get(i).scoreactuel>unitsreal.get(i).scoreactuel)
@@ -246,23 +235,28 @@ public class GameMaster {
 		}
 		return false;
 	}
-	public boolean fortifier(int n, int paysource, int paysdest, int team, int[] units)
+	public boolean fortifier( int paysource, int paysdest, int team, ArrayList<Unite> units)
 	{
 		if(AllPays.pays.get(paysource).team==team && AllPays.pays.get(paysdest).team==team )
 		{
 			if(AllPays.pays.get(paysource).adjacents.contains(AllPays.pays.get(paysdest)))
 			{
+				
+				if(units.size()<=0 || units.size()>3 || AllPays.pays.get(paysource).occupants.size()<units.size()+1)
+				{
+					return false;
+				}
 				boolean troopsok = true;
 				
-				for(int i=0;i<units.length;i++)
+				for(int i=0;i<units.size();i++)
 				{
-					Unite unitreal = GameScreen.master.soldiersmap.get(String.valueOf(units[i]));
+					Unite unitreal = units.get(i);
 					if(unitreal.mvtactuel <= 0 ||unitreal.team != team || unitreal.pays != paysource)troopsok = false;
 				}
 				
 				if(troopsok)
 				{
-					for(int i=0;i<units.length;i++)armies.get(teamactuel).transferSoldiers(units[i], paysdest);
+					for(int i=0;i<units.size();i++)armies.get(teamactuel).transferSoldiers(units.get(i).id, paysdest);
 					return true;
 				}
 					
@@ -286,7 +280,7 @@ public class GameMaster {
 		phase+=1;
 		AllPays.selection=null;
 		AllPays.selectiontype=1;
-		if(phase==3)
+		if(phase==2)
 		{
 			phase=0;
 			teamactuel+=1;

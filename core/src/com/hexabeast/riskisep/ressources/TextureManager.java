@@ -65,7 +65,7 @@ public class TextureManager {
 	public static void load()
 	{
 		loadOne("background","ocean.png");
-		loadOne("soldat","unites/rondrsoldat.png");
+		loadOne("soldat","unites/rondrsoldat2.png");
 		loadOne("canon","unites/rondcanon.png");
 		loadOne("cheval","unites/rondcheval.png");
 		loadOne("rond","rond.png");

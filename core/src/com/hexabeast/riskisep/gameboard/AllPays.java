@@ -76,19 +76,19 @@ public class AllPays {
 		return null;
 	}
 	
-	public static void update()
+	public static void update(int currenteam)
 	{
 		
 		for(int i=0; i<pays.size(); i++)
 		{
 			if(selection != pays.get(i))
 			{
-				pays.get(i).update(0);
+				pays.get(i).update(0,currenteam);
 			}
 		}
 		if(selection != null)
 		{
-			selection.update(selectiontype);
+			selection.update(selectiontype,currenteam);
 		}
 	}
 	

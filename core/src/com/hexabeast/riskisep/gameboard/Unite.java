@@ -23,6 +23,9 @@ public abstract class Unite {
 	public float x;
 	public float y;
 	
+	public float fx;
+	public float fy;
+	
 	public float h = 50;
 	public float w;
 	
@@ -31,15 +34,33 @@ public abstract class Unite {
 	public int scoreactuel = 0;
 	public int mvtactuel = 0;
 	
+	public float graphicmoveslow = 2;
+	public float graphicmovefast = 150;
+	public boolean running = false;
+	
 	public Unite(int id, int pays, int team)
 	{
 		this.id=id;
 		this.pays=pays;
 		this.team=team;
-		Vector2 pos = AllPays.pays.get(pays).getRandomPos();
-		this.x = pos.x;
-		this.y = pos.y;
+		randomizePos();
+		this.x=this.fx;
+		this.y=this.fy;
     }
+	
+	public void randomizePos()
+	{
+		Vector2 pos = AllPays.pays.get(pays).getRandomPos();
+		this.fx = pos.x;
+		this.fy = pos.y;
+		running=true;
+	}
+	
+	public void randomizePosChill()
+	{
+		randomizePos();
+		running=false;
+	}
 	
 	public void init()
 	{
@@ -47,15 +68,39 @@ public abstract class Unite {
 		pixmap = TextureManager.unitePixmap.get(type);
 	}
 	
-	public void update()
+	public void update(int type)
 	{
-		Shaders.setSoldierTeamShader(team);
+		float movespeed = graphicmovefast;
+		if(!running)movespeed = graphicmoveslow;
+		Vector2 distance = new Vector2(this.fx-this.x, this.fy-this.y);
+		Vector2 velocity = new Vector2(distance);
+		if(velocity.len()>20 || !running)velocity.nor();
+		else {
+			velocity.scl(1f/20f);
+		}
+		x+=movespeed*velocity.x*Main.delta;
+		y+=movespeed*velocity.y*Main.delta;
+		
+		if(distance.len()<3)randomizePosChill();
+		
+		if(type==0)Shaders.setSoldierTeamShader(team);
+		else if(type==1)Shaders.setWhiteTeam();
 		Main.batch.draw(tex, x-w/2, y-centery, w,h);
 		Shaders.setDefaultShader();
 	}
 	
+	public void update()
+	{
+		update(0);
+	}
+	
+	public void updatehighlight()
+	{
+		update(1);
+	}
+	
 	public boolean isTouched(float xx, float yy)
 	{
-		return TextureManager.isPixTouched(x,y,w,h,tex,pixmap,xx,yy);
+		return TextureManager.isPixTouched(x-w/2,y-centery,w,h,tex,pixmap,xx,yy);
 	}
 }

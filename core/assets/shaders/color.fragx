@@ -6,6 +6,7 @@ uniform vec3 u_color;
 uniform float rouge;
 uniform float vert;
 uniform float bleu;
+uniform float intensity;
 
 
 uniform sampler2D u_sampler2D;
@@ -15,9 +16,9 @@ void main()
 	vec4 col = texture2D(u_sampler2D, v_texCoord0) * v_color;
 	vec4 green = vec4(u_color.x,u_color.y,u_color.z,col.w);
 	
-	green.x = (rouge+col.x*2)/3;
-	green.y = (vert+col.y*2)/3;
-	green.z = (bleu+col.z*2)/3;
+	green.x = (rouge*intensity+col.x*2)/(2+intensity);
+	green.y = (vert*intensity+col.y*2)/(2+intensity);
+	green.z = (bleu*intensity+col.z*2)/(2+intensity);
 	
 
 	gl_FragColor = green;

@@ -14,7 +14,7 @@ public class AllUI {
 	public static Color[] teamcol = {new Color(0.5f,0.5f,1,1),new Color(1,0.5f,0.5f,1),new Color(0.5f,1,0.5f,1),new Color(1,1,0.5f,1)};
 	public static String[] teamname = {"bleue","rouge","verte","orange"};
 	public static String[] soldiername = {"Bleus","Rouges","Verts","Oranges"};
-	public static String[] phases = {"Placement","Attaque","Renforcement"};
+	public static String[] phases = {"Placement","Déplacement"};
 	
 	public static void loadUI()
 	{
@@ -46,8 +46,7 @@ public class AllUI {
 		}
 		
 		if(GameScreen.master.phase==0)turnButton.text="Fin placement";
-		if(GameScreen.master.phase==1)turnButton.text="Fin attaque";
-		if(GameScreen.master.phase==2)turnButton.text="Fin renforcement";	
+		if(GameScreen.master.phase==1)turnButton.text="Fin déplacement";
 		for(int i=0;i<buttons.size();i++)buttons.get(i).update();
 	}
 }

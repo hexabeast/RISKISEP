@@ -48,38 +48,41 @@ public class Pays {
 	
 	
 	
-	public void update(int select)
+	public void update(int select, int currenteam)
 	{
 		//if(occupants.size()>0)team = occupants.get(0).team;
 		
-		if(select==3)
+		/*if(select==3 && team==currenteam)
 		{
 			Shaders.setBlueShader();
 			for(int i=0; i<adjacents.size(); i++)
 			{
-				if(adjacents.get(i).team==team)adjacents.get(i).update(0);
+				if(adjacents.get(i).team==team)adjacents.get(i).update(0,currenteam);
 			}
 			Shaders.setDefaultShader();
-		}
-		if(select==2)
+		}*/
+		if(select>=2)
 		{
-			Shaders.setRedShader();
+			
 			for(int i=0; i<adjacents.size(); i++)
 			{
-				if(adjacents.get(i).team!=team)adjacents.get(i).update(0);
+				Shaders.setPaysTeamShader(adjacents.get(i).team,0.9f);
+				adjacents.get(i).update(-1,currenteam);
+				Shaders.setDefaultShader();
 			}
-			Shaders.setDefaultShader();
 		}
 		if(select >= 1)
 		{
 				
-			Shaders.setGreenShader();
+			Shaders.setPaysTeamShader(team,1.5f);
 			Main.batch.draw(TextureManager.tex.get(nom),x+(w-w*biggify)/2,y+(h-h*biggify)/2,w*biggify,h*biggify);
 			Shaders.setDefaultShader();
 		}
 		else
 		{
+			if(select==0)Shaders.setPaysTeamShader(team,0);
 			Main.batch.draw(TextureManager.tex.get(nom),x,y,w,h);
+			Shaders.setDefaultShader();
 		}
 		
 		/*
@@ -153,8 +156,8 @@ public class Pays {
 		while(!dedans)
 		{
 			dedans = true;
-			posx=(float) (x+Math.random()*w);
-			posy=(float) (y+Math.random()*h);
+			posx=(float) (x+w*0.2f+Math.random()*w*0.6f);
+			posy=(float) (y+h*0.2f+Math.random()*h*0.6f);
 			if(!isTouched(posx,posy))dedans=false;
 		}
 		return new Vector2(posx,posy);

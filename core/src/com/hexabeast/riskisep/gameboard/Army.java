@@ -61,6 +61,8 @@ public class Army {
 			Pays pays = AllPays.pays.get(s.pays); //Pays
 			pays.occupants.remove(s);
 			AllPays.pays.get(paysdest).occupants.add(s);
+			s.pays = paysdest;
+			s.randomizePos();
 			AllPays.pays.get(paysdest).team=team;
 			if(AllPays.pays.get(paysdest).occupants.size()==0)AllPays.pays.get(paysdest).team=-1;
 		}

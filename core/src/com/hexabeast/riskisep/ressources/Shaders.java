@@ -41,21 +41,7 @@ public class Shaders {
 		Main.batch.setShader(Shaders.outline);
 	}
 	
-	public static void setGreenShader()
-	{
-		Main.batch.setShader(Shaders.color);
-		Shaders.color.setUniformf("rouge", 0);
-		Shaders.color.setUniformf("vert", 1);
-		Shaders.color.setUniformf("bleu", 0);
-	}
-	
-	public static void setRedShader()
-	{
-		Main.batch.setShader(Shaders.color);
-		Shaders.color.setUniformf("rouge", 1);
-		Shaders.color.setUniformf("vert", 0);
-		Shaders.color.setUniformf("bleu", 0);
-	}
+
 	
 	public static void setSoldierTeamShader(int team)
 	{
@@ -72,15 +58,32 @@ public class Shaders {
 			Shaders.colorsoldiers.setUniformf("vert", GameMaster.teamcol[team].g);
 			Shaders.colorsoldiers.setUniformf("bleu", GameMaster.teamcol[team].b);
 		}
-		
 	}
 	
-	public static void setBlueShader()
+	public static void setPaysTeamShader(int team, float intensity)
 	{
 		Main.batch.setShader(Shaders.color);
-		Shaders.color.setUniformf("rouge", 0);
-		Shaders.color.setUniformf("vert", 0);
-		Shaders.color.setUniformf("bleu", 1);
+		Shaders.color.setUniformf("intensity", intensity);
+		if(team==-1)
+		{
+			Shaders.color.setUniformf("rouge", 0.5f);
+			Shaders.color.setUniformf("vert", 0.5f);
+			Shaders.color.setUniformf("bleu",  0.5f);
+		}
+		else
+		{
+			Shaders.color.setUniformf("rouge", GameMaster.teamcol[team].r);
+			Shaders.color.setUniformf("vert", GameMaster.teamcol[team].g);
+			Shaders.color.setUniformf("bleu", GameMaster.teamcol[team].b);
+		}
+	}
+	
+	public static void setWhiteTeam()
+	{
+		Main.batch.setShader(Shaders.colorsoldiers);
+		Shaders.colorsoldiers.setUniformf("rouge", 0.8f);
+		Shaders.colorsoldiers.setUniformf("vert", 0.8f);
+		Shaders.colorsoldiers.setUniformf("bleu", 0.8f);
 	}
 	
 	public static void setWaveShader()
