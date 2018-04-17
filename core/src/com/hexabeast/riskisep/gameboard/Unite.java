@@ -35,8 +35,8 @@ public abstract class Unite {
 	public int scoreactuel = 0;
 	public int mvtactuel = 0;
 	
-	public float graphicmoveslow = 1;
-	public float graphicmovefast = 150;
+	public static float graphicmoveslow = 2;
+	public static float graphicmovefast = 150;
 	public boolean running = false;
 	
 	public boolean dead=false;

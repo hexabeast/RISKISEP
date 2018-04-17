@@ -176,7 +176,13 @@ public class GameMaster {
 								selectedUnits.get(i).fy=(float) (GameScreen.gameMouse.y+(10*Math.random()-5));
 							}
 						}
-						else if(fortifier(selectedUnits.get(0).pays,touche,teamactuel,selectedUnits))selectedUnits.clear();
+						else if(fortifier(selectedUnits.get(0).pays,touche,teamactuel,selectedUnits))
+						{
+							for(int i=selectedUnits.size()-1; i>-1;i--)
+							{
+								if(selectedUnits.get(i).mvtactuel<=0)selectedUnits.remove(i);
+							}
+						}
 					}
 				}
 			}
