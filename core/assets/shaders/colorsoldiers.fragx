@@ -7,13 +7,15 @@ uniform float rouge;
 uniform float vert;
 uniform float bleu;
 
+uniform float transparent;
+
 
 uniform sampler2D u_sampler2D;
 
 void main() 
 {
 	vec4 col = texture2D(u_sampler2D, v_texCoord0) * v_color;
-	vec4 green = vec4(col.x,col.y,col.z,col.w);
+	vec4 green = vec4(col.x,col.y,col.z,col.w*transparent);
 	
 	if(col.x<0.8 || col.y<0.8 || col.z<0.8)
 	{

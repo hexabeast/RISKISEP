@@ -12,6 +12,7 @@ public class Cheval extends Unite {
 		att=1;
 		def=3;
 		mvt=3;
+		h*=1.3f;
 		tex = TextureManager.tex.get("cheval");
 		init();
 	}

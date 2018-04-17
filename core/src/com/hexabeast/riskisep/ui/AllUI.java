@@ -30,6 +30,13 @@ public class AllUI {
 	
 	public static void update()
 	{
+		
+		Main.batch.setColor(0.2f, 0.2f, 0.25f, 1);
+		//Main.batch.draw(TextureManager.tex.get("panneau"),-20,-90);
+		Main.batch.draw(TextureManager.tex.get("panneauv"),1750,-90);
+		Main.batch.setColor(1,1,1,1);
+		
+		
 		if(turnButton.isclicked())GameScreen.master.nextPhase();
 
 		Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, phases[GameScreen.master.phase]);
@@ -48,5 +55,11 @@ public class AllUI {
 		if(GameScreen.master.phase==0)turnButton.text="Fin placement";
 		if(GameScreen.master.phase==1)turnButton.text="Fin déplacement";
 		for(int i=0;i<buttons.size();i++)buttons.get(i).update();
+	}
+	
+	public static boolean UIpretest()
+	{
+		if(turnButton.isclicked() || GameScreen.gameMouse.x>1850)return true;
+		return false;
 	}
 }

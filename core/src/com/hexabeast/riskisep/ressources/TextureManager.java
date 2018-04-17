@@ -46,16 +46,23 @@ public class TextureManager {
 	{
 		Rectangle spriteBounds = new Rectangle(x,y,w,h);
 	    if (spriteBounds.contains(xx,yy)) {
-	        
+	        float factor = textu.getWidth()/w;
 
 	        int spriteLocalX = (int) (xx - x);
 	        
-	        int spriteLocalY = (int) ((yy) -y);
+	        int spriteLocalY = (int) (yy -y);
 
-	        int textureLocalX = spriteLocalX*2;
-	        int textureLocalY = spriteLocalY*2;
+	        int textureLocalX = (int) (spriteLocalX*factor);
+	        int textureLocalY = (int) (spriteLocalY*factor);
 	        
 	        Color col = new Color(pix.getPixel(textureLocalX, textu.getHeight()-textureLocalY));
+	        if(textu==tex.get("cannon"))
+	        {
+	        	System.out.println(col.r);
+		        System.out.println(col.g);
+		        System.out.println(col.a);
+	        }
+	        
 	        if(col.a<0.5)return false;
 	        return true;
 	    }
@@ -65,9 +72,9 @@ public class TextureManager {
 	public static void load()
 	{
 		loadOne("background","ocean.png");
-		loadOne("soldat","unites/rondrsoldat2.png");
-		loadOne("canon","unites/rondcanon.png");
-		loadOne("cheval","unites/rondcheval.png");
+		loadOne("soldat","unites/rondrsoldat3.png");
+		loadOne("cannon","unites/rondcanon2.png");
+		loadOne("cheval","unites/rondcheval2.png");
 		loadOne("rond","rond.png");
 		loadOne("rondr","rondr.png");
 		loadOne("rondb","rondb.png");
@@ -87,7 +94,7 @@ public class TextureManager {
 		
 		unitePixmap.add(loadPixMap("soldat"));
 		unitePixmap.add(loadPixMap("cheval"));
-		unitePixmap.add(loadPixMap("canon"));
+		unitePixmap.add(loadPixMap("cannon"));
 		
 	}
 	

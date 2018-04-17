@@ -43,9 +43,10 @@ public class Shaders {
 	
 
 	
-	public static void setSoldierTeamShader(int team)
+	public static void setSoldierTeamShader(int team, float transparency)
 	{
 		Main.batch.setShader(Shaders.colorsoldiers);
+		Shaders.colorsoldiers.setUniformf("transparent", transparency);
 		if(team==-1)
 		{
 			Shaders.colorsoldiers.setUniformf("rouge", 0.5f);
@@ -78,9 +79,10 @@ public class Shaders {
 		}
 	}
 	
-	public static void setWhiteTeam()
+	public static void setWhiteTeam(float transparency)
 	{
 		Main.batch.setShader(Shaders.colorsoldiers);
+		Shaders.colorsoldiers.setUniformf("transparent", transparency);
 		Shaders.colorsoldiers.setUniformf("rouge", 0.8f);
 		Shaders.colorsoldiers.setUniformf("vert", 0.8f);
 		Shaders.colorsoldiers.setUniformf("bleu", 0.8f);

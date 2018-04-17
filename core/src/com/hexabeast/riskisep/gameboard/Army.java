@@ -17,29 +17,28 @@ public class Army {
 		this.team=team;
 	}
 	
-	public void addSoldiers(int type, int n, int pays)
+	public Unite addSoldier(int type, int pays)
 	{
-		if(newsoldiers>=n)
+		if(newsoldiers>=GameMaster.unitTypes[type].cout)
 		{
-			newsoldiers-=n;
-			addSoldiersForce(type, n, pays);
+			newsoldiers-=GameMaster.unitTypes[type].cout;
+			return addSoldierForce(type, pays);
 		}
+		return null;
 	}
 	
-	public void addSoldiersForce(int type, int n, int pays)
+	public Unite addSoldierForce(int type, int pays)
 	{
-		for(int i=0;i<n;i++)
-		{
-			Unite s;
-			if(type==0)s = new Soldat(GameScreen.master.curid, pays,team);
-			else if(type==1)s = new Cheval(GameScreen.master.curid, pays,team);
-			else s = new Cannon(GameScreen.master.curid, pays,team);
-			soldiers.add(s);
-			GameScreen.master.soldiersmap.put(String.valueOf(GameScreen.master.curid), s);
-			AllPays.pays.get(pays).occupants.add(s);
-			AllPays.pays.get(pays).team=team;
-			GameScreen.master.curid++;
-		}
+		Unite s;
+		if(type==0)s = new Soldat(GameScreen.master.curid, pays,team);
+		else if(type==1)s = new Cheval(GameScreen.master.curid, pays,team);
+		else s = new Cannon(GameScreen.master.curid, pays,team);
+		soldiers.add(s);
+		GameScreen.master.soldiersmap.put(String.valueOf(GameScreen.master.curid), s);
+		AllPays.pays.get(pays).occupants.add(s);
+		AllPays.pays.get(pays).team=team;
+		GameScreen.master.curid++;
+		return s;
 	}
 	
 	public void removeSoldier(int id)
@@ -47,7 +46,7 @@ public class Army {
 		Unite s = GameScreen.master.soldiersmap.get(String.valueOf(id));
 		Pays pays = AllPays.pays.get(s.pays); //Pays
 		GameScreen.master.soldiersmap.remove(String.valueOf(s.id));
-		soldiers.remove(s);
+		s.dead=true;
 		pays.occupants.remove(s);
 		if(pays.occupants.size()==0)pays.team=-1;
 	}
@@ -73,14 +72,20 @@ public class Army {
 		Collections.sort(soldiers, new Comparator<Unite>() {
 	        @Override
 	        public int compare(Unite o1, Unite o2) {
-	        	int posy =(int) ((o2.y-o1.y)*1000);
+	        	int posy =(int) ((o2.y-o1.y)*1000000);
 	            return posy;
 	        }
 		});
 		for(int i=0;i<soldiers.size();i++)
 		{
-			soldiers.get(i).update();
+			if(!soldiers.get(i).dead)soldiers.get(i).update();
 		}
+		for(int i=soldiers.size()-1;i>-1;i--)
+		{
+			if(soldiers.get(i).dead)soldiers.get(i).update();
+			if(soldiers.get(i).transparency<=0)soldiers.remove(i);
+		}
+		
 	}
 	
 	public ArrayList<Pays> getCountries()

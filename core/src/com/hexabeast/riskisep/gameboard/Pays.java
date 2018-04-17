@@ -30,7 +30,7 @@ public class Pays {
 	
 	Pixmap pixmap;
 	
-	private float biggify = 1.02f;
+	private float biggify = 1.007f;
 	
 	public Pays(int id,String nom, int x, int y, int w, int h)
 	{
@@ -156,8 +156,8 @@ public class Pays {
 		while(!dedans)
 		{
 			dedans = true;
-			posx=(float) (x+w*0.2f+Math.random()*w*0.6f);
-			posy=(float) (y+h*0.2f+Math.random()*h*0.6f);
+			posx=(float) (x+w*0.1f+Math.random()*w*0.8f);
+			posy=(float) (y+h*0.1f+Math.random()*h*0.8f);
 			if(!isTouched(posx,posy))dedans=false;
 		}
 		return new Vector2(posx,posy);

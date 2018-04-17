@@ -29,6 +29,9 @@ public class Inputs implements InputProcessor{
 	public boolean middlePressed;
 	public boolean tomiddlePressed;
 	
+	public boolean middleUp;
+	public boolean tomiddleUp;
+	
 	public boolean CTRL = false;
 	public boolean Q = false;
 	public boolean Z = false;
@@ -140,6 +143,16 @@ public class Inputs implements InputProcessor{
 			middlePressed = false;
 		}
 		
+		if(tomiddleUp)
+		{
+			middleUp = true;
+			tomiddleUp = false;
+		}
+		else
+		{
+			middleUp = false;
+		}
+		
 		if(torightmouseup)
 		{
 			rightmouseup = true;
@@ -194,6 +207,7 @@ public class Inputs implements InputProcessor{
 		tomouseup = true;
 		if (button == Input.Buttons.RIGHT)torightmouseup = true;
 		if (button == Input.Buttons.LEFT)toleftmouseup = true;
+		if (button == Input.Buttons.MIDDLE)tomiddleUp = true;
 		return false;}
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {return false;}
@@ -202,7 +216,7 @@ public class Inputs implements InputProcessor{
 	@Override
 	public boolean scrolled(int amount) 
 	{
-
+		GameScreen.zoom(amount);
 		return false;
 	}
 	

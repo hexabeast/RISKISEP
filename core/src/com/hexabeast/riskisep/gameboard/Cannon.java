@@ -12,6 +12,7 @@ public class Cannon extends Unite {
 		att=3;
 		def=2;
 		mvt=1;
+		h*=1.2f;
 		tex = TextureManager.tex.get("cannon");
 		init();
 	}
