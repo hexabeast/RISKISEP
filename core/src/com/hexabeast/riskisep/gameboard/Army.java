@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import com.hexabeast.riskisep.GameScreen;
+import com.hexabeast.riskisep.ressources.Shaders;
 
 public class Army {
 	public ArrayList<Unite> soldiers = new ArrayList<Unite>();
@@ -79,6 +80,12 @@ public class Army {
 		for(int i=0;i<soldiers.size();i++)
 		{
 			if(!soldiers.get(i).dead)soldiers.get(i).update();
+		}
+		for(int i=0;i<soldiers.size();i++)
+		{
+			Shaders.setSoldierTeamShader(team, 0.6f);
+			if(!soldiers.get(i).dead)soldiers.get(i).updatePoints();
+			Shaders.setDefaultShader();
 		}
 		for(int i=soldiers.size()-1;i>-1;i--)
 		{

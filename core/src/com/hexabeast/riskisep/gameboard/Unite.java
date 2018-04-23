@@ -136,7 +136,12 @@ public abstract class Unite {
 		}
 		
 		Main.batch.draw(tex, x-tw/2, y-centery, tw,th);
-		Shaders.setSoldierTeamShader(team, 0.6f);
+		Shaders.setDefaultShader();
+		
+	}
+	
+	public void updatePoints()
+	{
 		float ballsize=6;
 		if(mvtactuel==1)
 			{
@@ -154,8 +159,6 @@ public abstract class Unite {
 			Main.batch.draw(TextureManager.tex.get("movepoint"), x-10-ballsize/2, y-centery+th, ballsize,ballsize);
 			Main.batch.draw(TextureManager.tex.get("movepoint"), x+10-ballsize/2, y-centery+th, ballsize,ballsize);
 			}
-		Shaders.setDefaultShader();
-		
 	}
 	
 	public void update()
