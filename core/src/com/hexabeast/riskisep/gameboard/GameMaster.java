@@ -64,6 +64,7 @@ public class GameMaster {
 				for(int l=0;l<5;l++)armies.get(j).addSoldierForce(0, rlist.get(i*2+j).id);
 			}
 		}
+		turnStart();
 	}
 	
 	public Unite unitTouched()
@@ -268,7 +269,7 @@ public class GameMaster {
 					int nbcombats = Math.min(challengers.size(), unitsreal.size());
 					for(int i=0;i<nbcombats;i++)
 					{
-						if(challengers.get(i).scoreactuel>unitsreal.get(i).scoreactuel)
+						if(challengers.get(i).scoreactuel>=unitsreal.get(i).scoreactuel)
 						{
 							armies.get(teamactuel).removeSoldier(unitsreal.get(i).id);
 						}
@@ -322,14 +323,7 @@ public class GameMaster {
 		unitType=0;
 		selectedUnits.clear();
 		lastPays = -1;
-		for(int i=0;i<armies.size();i++)
-		{
-			for(int j=0;j<armies.get(i).soldiers.size();j++)
-			{
-				armies.get(i).soldiers.get(j).scoreactuel=0;
-				armies.get(i).soldiers.get(j).mvtactuel=armies.get(i).soldiers.get(j).mvt;
-			}
-		}
+		
 		phase+=1;
 		AllPays.selection=null;
 		AllPays.selectiontype=1;
@@ -341,7 +335,20 @@ public class GameMaster {
 			{
 				teamactuel=0;
 			}
-			armies.get(teamactuel).newsoldiers+=(int)(armies.get(teamactuel).getCountries().size()/3);
+			turnStart();
+		}
+	}
+	
+	public void turnStart()
+	{
+		armies.get(teamactuel).newsoldiers+=(int)(armies.get(teamactuel).getCountries().size()/3);
+		for(int i=0;i<armies.size();i++)
+		{
+			for(int j=0;j<armies.get(i).soldiers.size();j++)
+			{
+				armies.get(i).soldiers.get(j).scoreactuel=0;
+				if(i==teamactuel)armies.get(i).soldiers.get(j).mvtactuel=armies.get(i).soldiers.get(j).mvt;
+			}
 		}
 	}
 

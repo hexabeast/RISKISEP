@@ -33,7 +33,7 @@ public abstract class Unite {
 	public float centery = 15;
 	
 	public int scoreactuel = 0;
-	public int mvtactuel = 0;
+	public int mvtactuel = mvt;
 	
 	public static float graphicmoveslow = 2;
 	public static float graphicmovefast = 150;
@@ -90,6 +90,7 @@ public abstract class Unite {
 	{
 		w = h*tex.getWidth()/tex.getHeight();
 		tw=w;
+		if(id>=0)mvtactuel=mvt;
 		pixmap = TextureManager.unitePixmap.get(type);
 	}
 	
@@ -135,7 +136,26 @@ public abstract class Unite {
 		}
 		
 		Main.batch.draw(tex, x-tw/2, y-centery, tw,th);
+		Shaders.setSoldierTeamShader(team, 0.6f);
+		float ballsize=6;
+		if(mvtactuel==1)
+			{
+			if(this.type==2)Main.batch.draw(TextureManager.tex.get("movepoint"), x-3-ballsize/2, y-centery+th, ballsize,ballsize);
+			else Main.batch.draw(TextureManager.tex.get("movepoint"), x-ballsize/2, y-centery+th+2, ballsize,ballsize);
+			}
+		if(mvtactuel==2)
+			{
+			Main.batch.draw(TextureManager.tex.get("movepoint"), x-5-ballsize/2, y-centery+th+2, ballsize,ballsize);
+			Main.batch.draw(TextureManager.tex.get("movepoint"), x+5-ballsize/2, y-centery+th+2, ballsize,ballsize);
+			}
+		if(mvtactuel==3)
+			{
+			Main.batch.draw(TextureManager.tex.get("movepoint"), x-ballsize/2, y-centery+th+2, ballsize,ballsize);
+			Main.batch.draw(TextureManager.tex.get("movepoint"), x-10-ballsize/2, y-centery+th, ballsize,ballsize);
+			Main.batch.draw(TextureManager.tex.get("movepoint"), x+10-ballsize/2, y-centery+th, ballsize,ballsize);
+			}
 		Shaders.setDefaultShader();
+		
 	}
 	
 	public void update()

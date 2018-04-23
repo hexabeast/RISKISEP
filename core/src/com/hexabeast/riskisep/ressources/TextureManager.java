@@ -56,12 +56,6 @@ public class TextureManager {
 	        int textureLocalY = (int) (spriteLocalY*factor);
 	        
 	        Color col = new Color(pix.getPixel(textureLocalX, textu.getHeight()-textureLocalY));
-	        if(textu==tex.get("cannon"))
-	        {
-	        	System.out.println(col.r);
-		        System.out.println(col.g);
-		        System.out.println(col.a);
-	        }
 	        
 	        if(col.a<0.5)return false;
 	        return true;
@@ -81,6 +75,7 @@ public class TextureManager {
 		loadOne("panneau","panneaubois.png");
 		loadOne("panneauv","panneauvert.png");
 		loadOne("blank","blank.png");
+		loadOne("movepoint","unites/movepoint.png");
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/cartoon.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
