@@ -66,10 +66,19 @@ public abstract class Unite {
 	
 	public void setPos(float x, float y)
 	{
-		this.x=x;
-		this.y=y;
-		this.fx=x;
-		this.fy=y;
+		if(x<-999 || y<-999)
+		{
+			randomizePos();
+			this.x=fx;
+			this.y=fy;
+		}
+		else
+		{
+			this.x=x;
+			this.y=y;
+			this.fx=x;
+			this.fy=y;
+		}
 	}
 	
 	public void randomizePos()
@@ -104,18 +113,28 @@ public abstract class Unite {
 		
 		if(type>=0)
 		{
-			float movespeed = graphicmovefast;
-			if(!running)movespeed = graphicmoveslow;
-			Vector2 distance = new Vector2(this.fx-this.x, this.fy-this.y);
-			Vector2 velocity = new Vector2(distance);
-			if(velocity.len()>20 || !running)velocity.nor();
-			else {
-				velocity.scl(1f/20f);
+			if(!GameMaster.noTransition)
+			{
+				float movespeed = graphicmovefast;
+				if(!running)movespeed = graphicmoveslow;
+				Vector2 distance = new Vector2(this.fx-this.x, this.fy-this.y);
+				Vector2 velocity = new Vector2(distance);
+				if(velocity.len()>20 || !running)velocity.nor();
+				else {
+					velocity.scl(1f/20f);
+				}
+				
+				x+=movespeed*velocity.x*Main.delta;
+				y+=movespeed*velocity.y*Main.delta;
+				
+				if(distance.len()<3)randomizePosChill();
 			}
-			x+=movespeed*velocity.x*Main.delta;
-			y+=movespeed*velocity.y*Main.delta;
+			else
+			{
+				x=fx;
+				y=fy;
+			}
 			
-			if(distance.len()<3)randomizePosChill();
 				
 		
 			if(AllPays.pays.get(pays)==AllPays.selection)
@@ -173,6 +192,7 @@ public abstract class Unite {
 	
 	public boolean isTouched(float xx, float yy)
 	{
-		return TextureManager.isPixTouched(x-tw/2,y-centery,tw,th,tex,pixmap,xx,yy);
+		if(!dead)return TextureManager.isPixTouched(x-tw/2,y-centery,tw,th,tex,pixmap,xx,yy);
+		return false;
 	}
 }

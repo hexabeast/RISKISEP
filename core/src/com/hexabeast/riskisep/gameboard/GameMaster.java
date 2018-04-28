@@ -26,10 +26,14 @@ public class GameMaster {
 	
 	public static Unite[] unitTypes = {new Soldat(-1,-1,-1),new Cheval(-1,-1,-1),new Cannon(-1,-1,-1)};
 	
-	public int njoueurs = 2;
+	public static boolean noTransition = true;
+	
+	public static int[] human = {1,1,1,1};
+	
+	public int njoueurs = human.length;
 	public int teamactuel = 0;
 	public int phase = 0;
-	public int[] human = {1,1};
+	
 	public int unitType = 0;
 	
 	public ArrayList<Unite> selectedUnits = new ArrayList<Unite>();
@@ -37,11 +41,11 @@ public class GameMaster {
 	
 	public GameMaster()
 	{
-		
 	}
 	
-	public void beginGame(int njoueurs)
+	public void beginGame()
 	{
+		IASimple.calculProb(unitTypes);
 		for(int i=0;i<njoueurs;i++)
 		{
 			armies.add(new Army(i));
@@ -51,17 +55,17 @@ public class GameMaster {
 		{
 			ias.add(new IASimple(i));
 		}
-		this.njoueurs = njoueurs;
+		this.njoueurs = human.length;
 		AllPays.selection=null;
 		
 		ArrayList<Pays> rlist = new ArrayList<Pays>();
 		rlist.addAll(AllPays.pays);
 		Collections.shuffle(rlist);
-		for(int i=0;i<AllPays.pays.size()/njoueurs;i++)
+		for(int i=0;i<(AllPays.pays.size()/njoueurs)+1;i++)
 		{
 			for(int j=0;j<njoueurs;j++)
 			{
-				for(int l=0;l<5;l++)armies.get(j).addSoldierForce(0, rlist.get(i*2+j).id);
+				if(i*njoueurs+j<AllPays.pays.size())for(int l=0;l<5;l++)armies.get(j).addSoldierForce(0, rlist.get(i*njoueurs+j).id);
 			}
 		}
 		turnStart();
@@ -82,7 +86,6 @@ public class GameMaster {
 	
 	public void update()
 	{
-		
 		AllPays.selectiontype=1;
 		
 		boolean leftdown = Inputs.instance.leftmousedown && !GameScreen.UIcollision;
@@ -244,15 +247,6 @@ public class GameMaster {
 				ArrayList<Unite> unitsreal = new ArrayList<Unite>();
 				
 				
-				
-				Collections.sort(unitsreal, new Comparator<Unite>() {
-			        @Override
-			        public int compare(Unite o1, Unite o2) {
-			        	int basescore =o2.scoreactuel*1000-o1.scoreactuel*1000;
-			        	int departage =o1.att-o2.att;
-			            return basescore+departage;
-			        }
-			    });
 				ArrayList<Unite> challengers = AllPays.pays.get(paysdefense).getChallengers();
 				
 				boolean troopsok = true;
@@ -264,11 +258,23 @@ public class GameMaster {
 					unitreal.scoreactuel=unitreal.puissance+Tools.lancerDe();
 					unitsreal.add(unitreal);
 				}
+				Collections.sort(unitsreal, new Comparator<Unite>() {
+			        @Override
+			        public int compare(Unite o1, Unite o2) {
+			        	int basescore =o2.scoreactuel*1000-o1.scoreactuel*1000;
+			        	int departage =o1.att-o2.att;
+			            return basescore+departage;
+			        }
+			    });
 				if(troopsok)
 				{
 					int nbcombats = Math.min(challengers.size(), unitsreal.size());
+					//System.out.println("###############");
 					for(int i=0;i<nbcombats;i++)
 					{
+						//System.out.println(challengers.get(i).scoreactuel);
+						//System.out.println(unitsreal.get(i).scoreactuel);
+						//System.out.println("---");
 						if(challengers.get(i).scoreactuel>=unitsreal.get(i).scoreactuel)
 						{
 							armies.get(teamactuel).removeSoldier(unitsreal.get(i).id);
@@ -331,10 +337,10 @@ public class GameMaster {
 		{
 			phase=0;
 			teamactuel+=1;
-			if(teamactuel==njoueurs)
-			{
-				teamactuel=0;
-			}
+			if(teamactuel==njoueurs)teamactuel=0;
+			if(teamactuel<njoueurs && armies.get(teamactuel).soldiers.size()==0)teamactuel+=1;
+			if(teamactuel==njoueurs)teamactuel=0;
+			
 			turnStart();
 		}
 	}
@@ -350,6 +356,9 @@ public class GameMaster {
 				if(i==teamactuel)armies.get(i).soldiers.get(j).mvtactuel=armies.get(i).soldiers.get(j).mvt;
 			}
 		}
+		
 	}
+	
+	
 
 }

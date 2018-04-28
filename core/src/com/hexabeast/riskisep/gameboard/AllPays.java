@@ -17,6 +17,7 @@ public class AllPays {
 	
 	public static void loadPays()
 	{
+		pays.clear();
 		JsonReader json = new JsonReader();
 		JsonValue base = json.parse(Gdx.files.internal("pays/risk.json"));
 

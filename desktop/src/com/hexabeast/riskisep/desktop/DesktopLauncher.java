@@ -15,8 +15,8 @@ public class DesktopLauncher {
 		//config.useGL30 = true;
 		config.title = "RISKISEP";
 		//config.vSyncEnabled = false;
-		//config.foregroundFPS = 0;
-		//config.backgroundFPS = 0;
+		config.foregroundFPS = 144;
+		config.backgroundFPS = 144;
 		new LwjglApplication(new Main(), config);
 	}
 }

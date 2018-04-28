@@ -164,6 +164,16 @@ public class Pays {
 		
 	}
 	
+	public int totalCost()
+	{
+		int cost = 0;
+		for(int i=0;i<occupants.size(); i++)
+		{
+			cost+=occupants.get(i).cout;
+		}
+		return cost;
+	}
+	
 	public void dispose()
 	{
 		pixmap.dispose();

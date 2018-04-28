@@ -40,7 +40,7 @@ public class GameScreen implements Screen{
 	public GameScreen() 
 	{
 		master = new GameMaster();
-		master.beginGame(2);
+		master.beginGame();
 		AllUI.loadUI();
 		camera = new OrthographicCamera(camw,camh);
 		gameMouse = new Vector2();
