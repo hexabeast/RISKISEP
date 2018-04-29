@@ -37,7 +37,7 @@ public class AllUI {
 		Main.batch.setColor(1,1,1,1);
 		
 		
-		if(!GameScreen.master.gamend)
+		if(!GameScreen.master.gamend && !GameScreen.master.gamestart)
 		{
 			if(turnButton.isclicked() && GameScreen.master.human[GameScreen.master.teamactuel]==1)GameScreen.master.nextPhase();
 			
@@ -46,7 +46,7 @@ public class AllUI {
 			Main.drawfontCenter(TextureManager.fontButton, 2020, 1150, "Armée "+teamname[GameScreen.master.teamactuel]);
 			TextureManager.fontButton.setColor(Color.WHITE);
 		}
-		else 
+		else if(GameScreen.master.gamend)
 		{
 			if(turnButton.isclicked())Main.game=new GameScreen();
 			
@@ -55,20 +55,27 @@ public class AllUI {
 			Main.drawfontCenter(TextureManager.fontButton, 2020, 1150, teamname[GameScreen.master.winner]+" gagne!");
 			TextureManager.fontButton.setColor(Color.WHITE);
 		}
+		else if(GameScreen.master.gamestart)
+		{
+			if(turnButton.isclicked())GameScreen.master.gamestart=false;
+			
+			Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, "Début de partie");
+		}
 		
 		
 		for(int i=0;i<GameScreen.master.njoueurs;i++)
 		{
 			TextureManager.fontButton.setColor(teamcol[i]);
 			Main.drawfontCenter(TextureManager.fontButton, 2020, 960-i*140, soldiername[i]+" libres: "+String.valueOf(GameScreen.master.armies.get(i).newsoldiers) );
-			Main.drawfontCenter(TextureManager.fontButton, 2020, 900-i*140, soldiername[i]+" placés: "+String.valueOf(GameScreen.master.armies.get(i).soldiers.size()) );
+			Main.drawfontCenter(TextureManager.fontButton, 2020, 900-i*140, "Pays "+soldiername[i]+": "+String.valueOf(GameScreen.apays.comptePaysTeam(i)) );
 			TextureManager.fontButton.setColor(Color.WHITE);
 		}
 		
 		if(GameScreen.master.phase==0)turnButton.text="Fin placement";
 		if(GameScreen.master.phase==1)turnButton.text="Fin déplacement";
 		if(GameScreen.master.human[GameScreen.master.teamactuel]!=1)turnButton.text="Tour de l'IA...";
-		if(GameScreen.master.gamend)turnButton.text="Recommencer";
+		if(GameScreen.master.gamend)turnButton.text="Reinitialiser";
+		if(GameScreen.master.gamestart)turnButton.text="Commencer";
 		for(int i=0;i<buttons.size();i++)buttons.get(i).update();
 	}
 	

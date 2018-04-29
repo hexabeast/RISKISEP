@@ -32,14 +32,36 @@ public class IASimple {
 	float cFaiblesse = 0.12f;
 	
 	public static Probabilities probabilities = new Probabilities();
+	public static int sleeptime = 10;
+	public static int slowtime = 300;
 	
 	public BoardState state;
 	public BoardState beginstate;
+	
+	public int phase = 0;
+	public Thread thread;
 	//float c
 	
 	public IASimple(int team)
 	{
 		this.team=team;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true)
+				{
+					while(playing==false)
+					{
+						try {
+							Thread.sleep(sleeptime);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					playf(phase, true);
+				}
+			}
+		}).start();
 	}
 	
 	public static void recurProb(int siz, int[] actuel, ArrayList<int[]> stockage, boolean first, int maxize)
@@ -262,23 +284,7 @@ public class IASimple {
 	
 	public ArrayList<Unite> getAttaquants(int id)
 	{
-		ArrayList<Unite> potattaquants = new ArrayList<Unite>();
-		for(int i=0;i<GameScreen.apays.pays.get(id).occupants.size(); i++)
-		{
-			if(GameScreen.apays.pays.get(id).occupants.get(i).mvtactuel>0)potattaquants.add(GameScreen.apays.pays.get(id).occupants.get(i));
-		}
-		Collections.sort(potattaquants,new Comparator<Unite>() {
-			@Override
-			public int compare(Unite o1, Unite o2) {
-				return o2.type-o1.type;
-			}
-		});
-		ArrayList<Unite> attaquants = new ArrayList<Unite>();
-		for(int i=0;i<Math.min(3,potattaquants.size()-1); i++)
-		{
-			attaquants.add(potattaquants.get(i));
-		}
-		return attaquants;
+		return GameScreen.apays.pays.get(id).getAttaquants();
 	}
 	
 	public float simulattaque(int id, int id2)
@@ -379,8 +385,9 @@ public class IASimple {
 	int tocountry = -1;
 	boolean readytoplay = false;
 	
-	public void playf(int phase)
+	public void playf(int phase, boolean threaded)
 	{
+		this.phase=phase;
 		//System.out.println("IA PLAY");
 		float basescore = -100000000;
 		boolean action = true;
@@ -388,10 +395,10 @@ public class IASimple {
 		while(action)
 		{
 			action = false;
-			while(bestplaytype != -1)
+			while(threaded && bestplaytype != -1)
 			{
 				try {
-					Thread.sleep(50);
+					Thread.sleep(sleeptime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -449,12 +456,12 @@ public class IASimple {
 							{
 								double tscore = simulattaque(state.pays[i].id,adjid);
 								tscore+=(Math.random()-0.5)*0.00000001;
-								System.out.println("------");
+								/*System.out.println("------");
 								System.out.print("Score avant attaque : ");
 								System.out.println(basescore);
 								System.out.print("Score après attaque : ");
 								System.out.println(tscore);
-								System.out.println("------");
+								System.out.println("------");*/
 								if(tscore>bestscore)
 								{
 									bestscore=tscore;
@@ -469,64 +476,77 @@ public class IASimple {
 			}
 			if(bestscore>basescore)
 			{
-				readytoplay = true;
+				if(GameMaster.iaslow)
+				{
+					try {
+						Thread.sleep(slowtime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				if(threaded)readytoplay = true;
+				else jouerCoup();
+				
 				action=true;
 			}
+			
 			first=false;
 		}
 		bestplaytype=4;
-		readytoplay = true;
+		if(threaded)readytoplay = true;
+		else jouerCoup();
 		playing=false;
 		//System.out.println(String.valueOf(team)+" "+String.valueOf(phase));
 	}
 	
 	public void play(final int phase)
 	{
+		this.phase=phase;
 		if(!playing && !readytoplay)
 		{
 			playing=true;
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					playf(phase);
-					
-				}
-			}).start();
 		}
 		
 		if(readytoplay)
 		{
-			if(bestplaytype==1)
-			{
-				if(!GameScreen.master.deployer(tocountry, team, -1000, -1000, 0))System.out.println("IA PROBLEME PLACEMENT");
-			}
-			else if(bestplaytype==2)
-			{
-				if(!GameScreen.master.attaquer(fromcountry, tocountry, team, getAttaquants(fromcountry)))
-				{
-					System.out.println(team);
-					System.out.println(GameScreen.apays.pays.get(fromcountry).nom);
-					System.out.println(GameScreen.apays.pays.get(tocountry).nom);
-					System.out.println(getAttaquants(fromcountry).size());
-					System.out.println("IA PROBLEME ATTAQUE");
-				}
-			}
-			else if(bestplaytype==3)
-			{
-				ArrayList<Unite> fortunits = new ArrayList<Unite>();
-				fortunits.add(getAttaquants(fromcountry).get(0));
-				if(!GameScreen.master.fortifier(fromcountry, tocountry, team, fortunits))System.out.println("IA PROBLEME DEPLACEMENT");
-			}
-			else if(bestplaytype==4)
-			{
-				GameScreen.master.nextPhase();
-			}
-			
-			readytoplay=false;
-			fromcountry = -1;
-			tocountry = -1;
-			bestplaytype = -1;
+			jouerCoup();
 		}
 		
+	}
+	
+	public void jouerCoup()
+	{
+		
+		if(bestplaytype==1)
+		{
+			if(!GameScreen.master.deployer(tocountry, team, -1000, -1000, 0))System.out.println("IA PROBLEME PLACEMENT");
+		}
+		else if(bestplaytype==2)
+		{
+			if(!GameScreen.master.attaquer(fromcountry, tocountry, team, getAttaquants(fromcountry)))
+			{
+				System.out.println(team);
+				System.out.println(GameScreen.apays.pays.get(fromcountry).nom);
+				System.out.println(GameScreen.apays.pays.get(tocountry).nom);
+				System.out.println(getAttaquants(fromcountry).size());
+				System.out.println("IA PROBLEME ATTAQUE");
+			}
+		}
+		else if(bestplaytype==3)
+		{
+			ArrayList<Unite> fortunits = new ArrayList<Unite>();
+			fortunits.add(getAttaquants(fromcountry).get(0));
+			if(!GameScreen.master.fortifier(fromcountry, tocountry, team, fortunits))System.out.println("IA PROBLEME DEPLACEMENT");
+		}
+		else if(bestplaytype==4)
+		{
+			GameScreen.master.nextPhase();
+		}
+		
+		readytoplay=false;
+		fromcountry = -1;
+		tocountry = -1;
+		bestplaytype = -1;
 	}
 }

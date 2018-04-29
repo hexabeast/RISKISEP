@@ -37,7 +37,7 @@ public abstract class Unite {
 	public int mvtactuel = mvt;
 	
 	public static float graphicmoveslow = 2;
-	public static float graphicmovefast = 150;
+	public static float graphicmovefast = 300;
 	public boolean running = false;
 	
 	public boolean dead=false;
@@ -118,6 +118,7 @@ public abstract class Unite {
 			{
 				float movespeed = graphicmovefast;
 				if(!running)movespeed = graphicmoveslow;
+				if(running && GameScreen.master.human[GameScreen.master.teamactuel]==0)movespeed = graphicmovefast*5;
 				Vector2 distance = new Vector2(this.fx-this.x, this.fy-this.y);
 				Vector2 velocity = new Vector2(distance);
 				if(velocity.len()>20 || !running)velocity.nor();
@@ -156,7 +157,7 @@ public abstract class Unite {
 		}
 		
 		Main.batch.draw(tex, x-tw/2, y-centery, tw,th);
-		Shaders.setDefaultShader();
+		//Shaders.setDefaultShader();
 		
 	}
 	

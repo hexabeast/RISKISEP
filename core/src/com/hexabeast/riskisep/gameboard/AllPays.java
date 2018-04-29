@@ -8,10 +8,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.hexabeast.riskisep.GameScreen;
+import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class AllPays {
 	public ArrayList<Pays> pays = new ArrayList<Pays>();
+	public ArrayList<PaysHighlight> highlights = new ArrayList<PaysHighlight>();
 	public Pays selection = null;
 	public int selectiontype = 1;
 	
@@ -25,7 +27,7 @@ public class AllPays {
 		for (JsonValue comp : base.get("regions"))
 		{
 			String nom = comp.getString("name").replaceAll("[^a-zA-Z]+","");
-			TextureManager.loadOne(nom, "pays/"+nom+".png");
+			//TextureManager.loadOne(nom, "pays/"+nom+".png");
 		    int w = Integer.parseInt(comp.getString("width"))/2;
 		    int h = Integer.parseInt(comp.getString("height"))/2;
 		    int x = Integer.parseInt(comp.getString("x"))/2-50;
@@ -77,15 +79,49 @@ public class AllPays {
 		return null;
 	}
 	
+	public void addHighlight(int id)
+	{
+		highlights.add(new PaysHighlight(pays.get(id)));
+	}
+	
 	public void update(int currenteam)
 	{
 		
 		for(int i=0; i<pays.size(); i++)
 		{
+			boolean highlight = false;
+			PaysHighlight phl = null;
+			for(int j=highlights.size()-1; j>=0;j--)
+			{
+				if(pays.get(i)==highlights.get(j).p)
+				{
+					
+					highlights.get(j).decay();
+					if(highlights.get(j).transparency<=0)
+					{
+						highlights.remove(j);
+					}
+					else 
+					{
+						highlight=true;
+						phl = highlights.get(j);
+					}
+				}
+			}
+			
 			if(selection != pays.get(i))
 			{
-				pays.get(i).update(0,currenteam);
+				if(highlight)
+				{
+					Shaders.setPaysTeamShader(phl.p.team,phl.transparency);
+					phl.p.update(-1,currenteam);
+				}
+				else
+				{
+					pays.get(i).update(0,currenteam);
+				}
 			}
+			
 		}
 		if(selection != null)
 		{
@@ -93,6 +129,15 @@ public class AllPays {
 		}
 	}
 	
+	public int comptePaysTeam(int t)
+	{
+		int total=0;
+		for(int i=0; i<pays.size(); i++)
+		{
+			if(pays.get(i).team==t)total+=1;
+		}
+		return total;
+	}
 	public int paysTouched()
 	{
 		for(int i=0; i<pays.size(); i++)

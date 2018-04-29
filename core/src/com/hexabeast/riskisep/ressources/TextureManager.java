@@ -15,6 +15,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.hexabeast.riskisep.GameScreen;
+import com.hexabeast.riskisep.gameboard.Pays;
 
 public class TextureManager { 
 	private static ArrayList<Texture> textures = new ArrayList<Texture>();
@@ -79,11 +83,13 @@ public class TextureManager {
 		loadOne("blank","blank.png");
 		loadOne("movepoint","unites/movepoint.png");
 		
+		loadPaysTextures();
+		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/cartoon.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 28;
+		parameter.size = 26;
 		font = generator.generateFont(parameter);
-		parameter.size = 35;
+		parameter.size = 32;
 		fontButton = generator.generateFont(parameter);
 		generator.dispose();
 		
@@ -93,6 +99,19 @@ public class TextureManager {
 		unitePixmap.add(loadPixMap("cheval"));
 		unitePixmap.add(loadPixMap("cannon"));
 		
+	}
+	
+	public static void loadPaysTextures()
+	{
+		JsonReader json = new JsonReader();
+		JsonValue base = json.parse(Gdx.files.internal("pays/risk.json"));
+
+		//array objects in json if you would have more components
+		for (JsonValue comp : base.get("regions"))
+		{
+			String nom = comp.getString("name").replaceAll("[^a-zA-Z]+","");
+			TextureManager.loadOne(nom, "pays/"+nom+".png");
+		}
 	}
 	
 	public static Texture getsoldiertex(int team)

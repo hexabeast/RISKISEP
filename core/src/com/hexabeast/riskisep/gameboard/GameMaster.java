@@ -16,21 +16,29 @@ import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class GameMaster {
+	
+	
+	
+	public static boolean noTransition = false;
+	public static boolean fastplay = false;
+	public static boolean iaslow = false;
+	
+	public int[] humanstart = {0,0,0,0};
+	
+	public int[] human = humanstart.clone();
+	
+	public static Unite[] unitTypes = {new Soldat(-1,-1,-1),new Cheval(-1,-1,-1),new Cannon(-1,-1,-1)};
+	public static Color[] teamcol = {new Color(0,0,1,1),new Color(1,0,0,1),new Color(0,1,0,1),new Color(1,1,0,1)};
+	
+	public static int unitstartnumber = 1; 
+	
 	public ArrayList<Army> armies = new ArrayList<Army>();
 	public ArrayList<IASimple> ias = new ArrayList<IASimple>();
 	public Map<String, Unite> soldiersmap = new HashMap<String, Unite>();
 	
-	public static Color[] teamcol = {new Color(0,0,1,1),new Color(1,0,0,1),new Color(0,1,0,1),new Color(1,1,0,1)};
-	
 	public int curid = 0;
 	
-	public static Unite[] unitTypes = {new Soldat(-1,-1,-1),new Cheval(-1,-1,-1),new Cannon(-1,-1,-1)};
-	
-	public static boolean noTransition = true;
-	
-	public int[] human = {0,0,0,0};
-	
-	public int njoueurs = human.length;
+	public int njoueurs = humanstart.length;
 	public int teamactuel = 0;
 	public int phase = 0;
 	
@@ -40,7 +48,10 @@ public class GameMaster {
 	public int lastPays = -1;
 	
 	public boolean gamend = false;
+	public boolean gamestart = true;
 	public int winner = 0;
+	
+	public boolean firstturn;
 	
 	public GameMaster()
 	{
@@ -48,6 +59,9 @@ public class GameMaster {
 	
 	public void beginGame()
 	{
+		human = humanstart.clone();
+		firstturn=true;
+		gamestart=true;
 		IASimple.calculProb(unitTypes);
 		for(int i=0;i<njoueurs;i++)
 		{
@@ -68,7 +82,7 @@ public class GameMaster {
 		{
 			for(int j=0;j<njoueurs;j++)
 			{
-				if(i*njoueurs+j<GameScreen.apays.pays.size())for(int l=0;l<1;l++)armies.get(j).addSoldierForce(0, rlist.get(i*njoueurs+j).id);
+				if(i*njoueurs+j<GameScreen.apays.pays.size())for(int l=0;l<unitstartnumber;l++)armies.get(j).addSoldierForce(0, rlist.get(i*njoueurs+j).id);
 			}
 		}
 		turnStart();
@@ -89,7 +103,7 @@ public class GameMaster {
 	
 	public void update()
 	{
-		if(!gamend)
+		if(!gamend && !gamestart)
 		{
 			GameScreen.apays.selectiontype=1;
 			
@@ -163,6 +177,11 @@ public class GameMaster {
 							}
 							touche=-1;
 						}
+						if(selectedUnits.size()==0 && unitouche==null && touche>=0 && GameScreen.apays.pays.get(touche).team == teamactuel)
+						{
+							selectedUnits.addAll(GameScreen.apays.pays.get(touche).getAttaquants());
+							touche=-1;
+						}
 						if(selectedUnits.size()>0 && touche>=0 && GameScreen.apays.pays.get(touche).team != teamactuel)
 						{
 							if(attaquer(selectedUnits.get(0).pays,touche,teamactuel,selectedUnits))
@@ -198,7 +217,20 @@ public class GameMaster {
 			}
 			else if(human[teamactuel]==0)
 			{
-				ias.get(teamactuel).play(phase);
+				if(!fastplay)
+				{
+					ias.get(teamactuel).play(phase);
+				}
+				else if (!firstturn)
+				{
+					while(!gamend)
+					{
+						//System.out.println(armies.get(teamactuel).soldiers.size());
+						ias.get(teamactuel).playf(phase,false);
+						checkWinner();
+					}
+					System.out.println("GameEnd");
+				}
 			}
 			else
 			{
@@ -216,13 +248,35 @@ public class GameMaster {
 		for(int i=0;i<armies.size();i++)
 		{
 			armies.get(i).update();
+		}
+		checkWinner();
+		
+		if(!gamend && !gamestart && human[teamactuel]==1 && phase==0 && armies.get(teamactuel).newsoldiers>=unitTypes[unitType].cout)
+		{
+			unitTypes[unitType].team=teamactuel;
+			unitTypes[unitType].x=GameScreen.gameMouse.x;
+			unitTypes[unitType].y=GameScreen.gameMouse.y;
+			unitTypes[unitType].transparency=0.6f;
+			unitTypes[unitType].update(-1);
+		}
+		for(int i=0;i<selectedUnits.size();i++)
+		{
+			selectedUnits.get(i).updatehighlight();
+		}
+		Shaders.setDefaultShader();
+		firstturn=false;
+	}
+	
+	public void checkWinner()
+	{
+		for(int i=0;i<armies.size();i++)
+		{
 			if(armies.get(i).soldiers.size()==0)
 			{
 				armies.get(i).newsoldiers=0;
 				human[i]=-1;
 			}
 		}
-		
 		int alivenumber = 0;
 		int lastalive = 0;
 		for(int i=0;i<njoueurs;i++)if(human[i]>=0)
@@ -235,20 +289,6 @@ public class GameMaster {
 			gamend = true;
 			winner = lastalive;
 		}
-		
-		if(human[teamactuel]==1 && phase==0 && armies.get(teamactuel).newsoldiers>=unitTypes[unitType].cout)
-		{
-			unitTypes[unitType].team=teamactuel;
-			unitTypes[unitType].x=GameScreen.gameMouse.x;
-			unitTypes[unitType].y=GameScreen.gameMouse.y;
-			unitTypes[unitType].transparency=0.6f;
-			unitTypes[unitType].update(-1);
-		}
-		for(int i=0;i<selectedUnits.size();i++)
-		{
-			selectedUnits.get(i).updatehighlight();
-		}
-		
 	}
 	
 	public boolean deployer(int paysid, int team, float x, float y, int type)
@@ -257,6 +297,7 @@ public class GameMaster {
 		{
 			Unite u = armies.get(teamactuel).addSoldier(type, paysid);
 			if(u!=null)u.setPos(x,y);
+			if(!fastplay)GameScreen.apays.addHighlight(paysid);
 			return true;
 		}
 		return false;
@@ -316,6 +357,9 @@ public class GameMaster {
 					{
 						for(int i=0;i<unitsreal.size();i++)armies.get(teamactuel).transferSoldiers(unitsreal.get(i).id, paysdefense);
 					}
+					
+					if(!fastplay)GameScreen.apays.addHighlight(paysattaque);
+					if(!fastplay)GameScreen.apays.addHighlight(paysdefense);
 					return true;
 				}
 			}
@@ -343,6 +387,8 @@ public class GameMaster {
 				
 				if(troopsok)
 				{
+					if(!fastplay)GameScreen.apays.addHighlight(paysdest);
+					if(!fastplay)GameScreen.apays.addHighlight(paysource);
 					for(int i=0;i<units.size();i++)armies.get(teamactuel).transferSoldiers(units.get(i).id, paysdest);
 					return true;
 				}
@@ -367,8 +413,9 @@ public class GameMaster {
 			phase=0;
 			teamactuel+=1;
 			if(teamactuel==njoueurs)teamactuel=0;
-			if(teamactuel<njoueurs && armies.get(teamactuel).soldiers.size()==0)teamactuel+=1;
+			while(teamactuel<njoueurs && armies.get(teamactuel).soldiers.size()==0)teamactuel+=1;
 			if(teamactuel==njoueurs)teamactuel=0;
+			while(teamactuel<njoueurs && armies.get(teamactuel).soldiers.size()==0)teamactuel+=1;
 			
 			turnStart();
 		}

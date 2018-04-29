@@ -9,6 +9,7 @@ import com.hexabeast.riskisep.ressources.Shaders;
 
 public class Army {
 	public ArrayList<Unite> soldiers = new ArrayList<Unite>();
+	public ArrayList<Unite> deadsoldiers = new ArrayList<Unite>();
 	
 	public int team = 0;
 	public int newsoldiers = 10;
@@ -49,6 +50,8 @@ public class Army {
 		GameScreen.master.soldiersmap.remove(String.valueOf(s.id));
 		s.dead=true;
 		pays.occupants.remove(s);
+		if(!GameMaster.fastplay)deadsoldiers.add(s);
+		soldiers.remove(s);
 		if(pays.occupants.size()==0)pays.team=-1;
 	}
 	
@@ -77,9 +80,9 @@ public class Army {
 	            return posy;
 	        }
 		});
-		for(int i=0;i<soldiers.size();i++)
+		for(int i=soldiers.size()-1;i>-1;i--)
 		{
-			if(!soldiers.get(i).dead)soldiers.get(i).update();
+			soldiers.get(i).update();
 		}
 		for(int i=0;i<soldiers.size();i++)
 		{
@@ -87,11 +90,12 @@ public class Army {
 			if(!soldiers.get(i).dead)soldiers.get(i).updatePoints();
 			Shaders.setDefaultShader();
 		}
-		for(int i=soldiers.size()-1;i>-1;i--)
+		for(int i=deadsoldiers.size()-1;i>-1;i--)
 		{
-			if(soldiers.get(i).dead)soldiers.get(i).update();
-			if(soldiers.get(i).transparency<=0)soldiers.remove(i);
+			deadsoldiers.get(i).update();
+			if(deadsoldiers.get(i).transparency<=0)deadsoldiers.remove(i);
 		}
+		Shaders.setDefaultShader();
 		
 	}
 	

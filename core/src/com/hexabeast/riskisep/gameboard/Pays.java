@@ -78,6 +78,11 @@ public class Pays {
 			Main.batch.draw(TextureManager.tex.get(nom),x+(w-w*biggify)/2,y+(h-h*biggify)/2,w*biggify,h*biggify);
 			Shaders.setDefaultShader();
 		}
+		else if(select == -1)
+		{
+			Main.batch.draw(TextureManager.tex.get(nom),x+(w-w*biggify)/2,y+(h-h*biggify)/2,w*biggify,h*biggify);
+			Shaders.setDefaultShader();
+		}
 		else
 		{
 			if(select==0)Shaders.setPaysTeamShader(team,0);
@@ -103,6 +108,27 @@ public class Pays {
 	public boolean isTouched()
 	{
 	    return isTouched(GameScreen.gameMouse.x,GameScreen.gameMouse.y);
+	}
+	
+	public ArrayList<Unite> getAttaquants()
+	{
+		ArrayList<Unite> potattaquants = new ArrayList<Unite>();
+		for(int i=0;i<occupants.size(); i++)
+		{
+			if(occupants.get(i).mvtactuel>0)potattaquants.add(occupants.get(i));
+		}
+		Collections.sort(potattaquants,new Comparator<Unite>() {
+			@Override
+			public int compare(Unite o1, Unite o2) {
+				return o2.type-o1.type;
+			}
+		});
+		ArrayList<Unite> attaquants = new ArrayList<Unite>();
+		for(int i=0;i<Math.min(potattaquants.size(),Math.min(3,occupants.size()-1)); i++)
+		{
+			attaquants.add(potattaquants.get(i));
+		}
+		return attaquants;
 	}
 	
 	public ArrayList<Unite> getChallengers()
