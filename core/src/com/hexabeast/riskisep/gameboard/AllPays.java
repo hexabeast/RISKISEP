@@ -11,11 +11,11 @@ import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class AllPays {
-	public static ArrayList<Pays> pays = new ArrayList<Pays>();
-	public static Pays selection = null;
-	public static int selectiontype = 1;
+	public ArrayList<Pays> pays = new ArrayList<Pays>();
+	public Pays selection = null;
+	public int selectiontype = 1;
 	
-	public static void loadPays()
+	public void loadPays()
 	{
 		pays.clear();
 		JsonReader json = new JsonReader();
@@ -67,7 +67,7 @@ public class AllPays {
 		rechercheNom("Russiecentre").numbery+=15;
 	}
 	
-	public static Pays rechercheNom(String st)
+	public Pays rechercheNom(String st)
 	{
 		for(int i=0; i<pays.size(); i++)
 		{
@@ -77,7 +77,7 @@ public class AllPays {
 		return null;
 	}
 	
-	public static void update(int currenteam)
+	public void update(int currenteam)
 	{
 		
 		for(int i=0; i<pays.size(); i++)
@@ -93,7 +93,7 @@ public class AllPays {
 		}
 	}
 	
-	public static int paysTouched()
+	public int paysTouched()
 	{
 		for(int i=0; i<pays.size(); i++)
 		{

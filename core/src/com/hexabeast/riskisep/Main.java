@@ -27,7 +27,6 @@ public class Main extends Game {
 		Shaders.loadShaders();
 		shapebatch = new ShapeRenderer();
 		TextureManager.load();
-		AllPays.loadPays();
 		game = new GameScreen();
 		Inputs.instance = new Inputs();
 		Gdx.input.setInputProcessor(Inputs.instance);

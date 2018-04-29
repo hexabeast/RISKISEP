@@ -3,6 +3,7 @@ package com.hexabeast.riskisep.gameboard;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.Main;
 import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
@@ -83,7 +84,7 @@ public abstract class Unite {
 	
 	public void randomizePos()
 	{
-		Vector2 pos = AllPays.pays.get(pays).getRandomPos();
+		Vector2 pos = GameScreen.apays.pays.get(pays).getRandomPos();
 		this.fx = pos.x;
 		this.fy = pos.y;
 		running=true;
@@ -137,7 +138,7 @@ public abstract class Unite {
 			
 				
 		
-			if(AllPays.pays.get(pays)==AllPays.selection)
+			if(GameScreen.apays.pays.get(pays)==GameScreen.apays.selection)
 			{
 				tw*=1.05f;
 				th*=1.05f;

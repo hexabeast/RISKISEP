@@ -1,5 +1,6 @@
 package com.hexabeast.riskisep.ia;
 
+import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.gameboard.AllPays;
 
 public class BoardState {
@@ -7,12 +8,12 @@ public class BoardState {
 	
 	public BoardState()
 	{
-		pays = new SimplePays[AllPays.pays.size()];
+		pays = new SimplePays[GameScreen.apays.pays.size()];
 	}
 	
 	public BoardState(BoardState state)
 	{
-		pays = new SimplePays[AllPays.pays.size()];
+		pays = new SimplePays[GameScreen.apays.pays.size()];
 		for(int i=0; i<state.pays.length; i++)
 		{
 			pays[i] = new SimplePays(state.pays[i].id, state.pays[i].team, state.pays[i].nbsoldats);
@@ -21,9 +22,9 @@ public class BoardState {
 	
 	public void loadCurrentState()
 	{
-		for(int i=0; i<AllPays.pays.size(); i++)
+		for(int i=0; i<GameScreen.apays.pays.size(); i++)
 		{
-			pays[i] = new SimplePays(AllPays.pays.get(i).id, AllPays.pays.get(i).team, AllPays.pays.get(i).totalCost());
+			pays[i] = new SimplePays(GameScreen.apays.pays.get(i).id, GameScreen.apays.pays.get(i).team, GameScreen.apays.pays.get(i).totalCost());
 		}
 	}
 	

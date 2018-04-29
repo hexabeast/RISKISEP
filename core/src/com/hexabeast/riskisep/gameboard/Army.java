@@ -36,8 +36,8 @@ public class Army {
 		else s = new Cannon(GameScreen.master.curid, pays,team);
 		soldiers.add(s);
 		GameScreen.master.soldiersmap.put(String.valueOf(GameScreen.master.curid), s);
-		AllPays.pays.get(pays).occupants.add(s);
-		AllPays.pays.get(pays).team=team;
+		GameScreen.apays.pays.get(pays).occupants.add(s);
+		GameScreen.apays.pays.get(pays).team=team;
 		GameScreen.master.curid++;
 		return s;
 	}
@@ -45,7 +45,7 @@ public class Army {
 	public void removeSoldier(int id)
 	{
 		Unite s = GameScreen.master.soldiersmap.get(String.valueOf(id));
-		Pays pays = AllPays.pays.get(s.pays); //Pays
+		Pays pays = GameScreen.apays.pays.get(s.pays); //Pays
 		GameScreen.master.soldiersmap.remove(String.valueOf(s.id));
 		s.dead=true;
 		pays.occupants.remove(s);
@@ -58,13 +58,13 @@ public class Army {
 		{
 			Unite s = GameScreen.master.soldiersmap.get(String.valueOf(id));
 			s.mvtactuel-=1;
-			Pays pays = AllPays.pays.get(s.pays); //Pays
+			Pays pays = GameScreen.apays.pays.get(s.pays); //Pays
 			pays.occupants.remove(s);
-			AllPays.pays.get(paysdest).occupants.add(s);
+			GameScreen.apays.pays.get(paysdest).occupants.add(s);
 			s.pays = paysdest;
 			s.randomizePos();
-			AllPays.pays.get(paysdest).team=team;
-			if(AllPays.pays.get(paysdest).occupants.size()==0)AllPays.pays.get(paysdest).team=-1;
+			GameScreen.apays.pays.get(paysdest).team=team;
+			if(GameScreen.apays.pays.get(paysdest).occupants.size()==0)GameScreen.apays.pays.get(paysdest).team=-1;
 		}
 	}
 	
@@ -98,9 +98,9 @@ public class Army {
 	public ArrayList<Pays> getCountries()
 	{
 		ArrayList<Pays> c = new ArrayList<Pays>();
-		for(int i=0;i<AllPays.pays.size();i++)
+		for(int i=0;i<GameScreen.apays.pays.size();i++)
 		{
-			if(AllPays.pays.get(i).team==team)c.add(AllPays.pays.get(i));
+			if(GameScreen.apays.pays.get(i).team==team)c.add(GameScreen.apays.pays.get(i));
 		}
 		return c;
 	}

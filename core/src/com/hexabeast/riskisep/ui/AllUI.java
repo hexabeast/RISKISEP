@@ -37,12 +37,25 @@ public class AllUI {
 		Main.batch.setColor(1,1,1,1);
 		
 		
-		if(turnButton.isclicked())GameScreen.master.nextPhase();
-
-		Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, phases[GameScreen.master.phase]);
-		TextureManager.fontButton.setColor(teamcol[GameScreen.master.teamactuel]);
-		Main.drawfontCenter(TextureManager.fontButton, 2020, 1150, "Armée "+teamname[GameScreen.master.teamactuel]);
-		TextureManager.fontButton.setColor(Color.WHITE);
+		if(!GameScreen.master.gamend)
+		{
+			if(turnButton.isclicked() && GameScreen.master.human[GameScreen.master.teamactuel]==1)GameScreen.master.nextPhase();
+			
+			Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, phases[GameScreen.master.phase]);
+			TextureManager.fontButton.setColor(teamcol[GameScreen.master.teamactuel]);
+			Main.drawfontCenter(TextureManager.fontButton, 2020, 1150, "Armée "+teamname[GameScreen.master.teamactuel]);
+			TextureManager.fontButton.setColor(Color.WHITE);
+		}
+		else 
+		{
+			if(turnButton.isclicked())Main.game=new GameScreen();
+			
+			Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, "Partie Terminée");
+			TextureManager.fontButton.setColor(teamcol[GameScreen.master.winner]);
+			Main.drawfontCenter(TextureManager.fontButton, 2020, 1150, teamname[GameScreen.master.winner]+" gagne!");
+			TextureManager.fontButton.setColor(Color.WHITE);
+		}
+		
 		
 		for(int i=0;i<GameScreen.master.njoueurs;i++)
 		{
@@ -54,6 +67,8 @@ public class AllUI {
 		
 		if(GameScreen.master.phase==0)turnButton.text="Fin placement";
 		if(GameScreen.master.phase==1)turnButton.text="Fin déplacement";
+		if(GameScreen.master.human[GameScreen.master.teamactuel]!=1)turnButton.text="Tour de l'IA...";
+		if(GameScreen.master.gamend)turnButton.text="Recommencer";
 		for(int i=0;i<buttons.size();i++)buttons.get(i).update();
 	}
 	

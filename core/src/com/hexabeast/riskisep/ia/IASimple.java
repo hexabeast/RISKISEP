@@ -24,12 +24,12 @@ public class IASimple {
 	
 	public static int PROBACCURACY = 1000000;
 	
-	float cUnits = 1;
-	float cEUnits = 1;
-	float cCountries = 4;
+	float cUnits = 5;
+	float cEUnits = 6.05f;
+	float cCountries = 12;
 	float cContinents = 1;
-	float cForce = 0.5f;
-	float cFaiblesse = 1;
+	float cForce = 0.2f;
+	float cFaiblesse = 0.12f;
 	
 	public static Probabilities probabilities = new Probabilities();
 	
@@ -193,20 +193,28 @@ public class IASimple {
 	{
 		float etat = 0;
 		int nbcompare = 0;
-		for(int i=0; i<AllPays.pays.size(); i++)
+		for(int i=0; i<GameScreen.apays.pays.size(); i++)
 		{
 			if(state.pays[i].team==team)
 			{
-				for(int j=0; j<AllPays.pays.get(i).adjacents.size(); j++)
+				for(int j=0; j<GameScreen.apays.pays.get(i).adjacents.size(); j++)
 				{
-					SimplePays ennemi = state.pays[AllPays.pays.get(i).adjacents.get(j).id];
-					SimplePays ami = state.pays[AllPays.pays.get(i).adjacents.get(j).id];
-					etat+=Math.max(0, ami.nbsoldats-ennemi.nbsoldats);
-					nbcompare+=1;
+					SimplePays ennemi = state.pays[GameScreen.apays.pays.get(i).adjacents.get(j).id];
+					if(ennemi.team!=team)
+					{
+						SimplePays ami = state.pays[i];
+						etat+=Math.min(Math.sqrt(Math.max(0, ami.nbsoldats-ennemi.nbsoldats)),5);
+						nbcompare+=1;
+					}
+					else
+					{
+						etat+=5;
+						nbcompare+=1;
+					}
 				}
 			}
 		}
-		etat/=nbcompare;
+		if(nbcompare>0)etat/=(float)nbcompare;
 		return etat;
 	}
 	
@@ -214,20 +222,23 @@ public class IASimple {
 	{
 		float etat = 0;
 		int nbcompare = 0;
-		for(int i=0; i<AllPays.pays.size(); i++)
+		for(int i=0; i<GameScreen.apays.pays.size(); i++)
 		{
 			if(state.pays[i].team==team)
 			{
-				for(int j=0; j<AllPays.pays.get(i).adjacents.size(); j++)
+				for(int j=0; j<GameScreen.apays.pays.get(i).adjacents.size(); j++)
 				{
-					SimplePays ennemi = state.pays[AllPays.pays.get(i).adjacents.get(j).id];
-					SimplePays ami = state.pays[AllPays.pays.get(i).adjacents.get(j).id];
-					etat+=Math.max(0, ennemi.nbsoldats-ami.nbsoldats);
-					nbcompare+=1;
+					SimplePays ennemi = state.pays[GameScreen.apays.pays.get(i).adjacents.get(j).id];
+					if(ennemi.team!=team)
+					{
+						SimplePays ami = state.pays[i];
+						etat+=Math.pow(Math.max(0, ennemi.nbsoldats-ami.nbsoldats),2);
+						nbcompare+=1;
+					}
 				}
 			}
 		}
-		etat/=nbcompare;
+		if(nbcompare>0)etat/=(float)nbcompare;
 		return etat;
 	}
 	
@@ -252,9 +263,9 @@ public class IASimple {
 	public ArrayList<Unite> getAttaquants(int id)
 	{
 		ArrayList<Unite> potattaquants = new ArrayList<Unite>();
-		for(int i=0;i<AllPays.pays.get(id).occupants.size(); i++)
+		for(int i=0;i<GameScreen.apays.pays.get(id).occupants.size(); i++)
 		{
-			potattaquants.add(AllPays.pays.get(id).occupants.get(i));
+			if(GameScreen.apays.pays.get(id).occupants.get(i).mvtactuel>0)potattaquants.add(GameScreen.apays.pays.get(id).occupants.get(i));
 		}
 		Collections.sort(potattaquants,new Comparator<Unite>() {
 			@Override
@@ -263,7 +274,7 @@ public class IASimple {
 			}
 		});
 		ArrayList<Unite> attaquants = new ArrayList<Unite>();
-		for(int i=0;i<Math.min(3,potattaquants.size()); i++)
+		for(int i=0;i<Math.min(3,potattaquants.size()-1); i++)
 		{
 			attaquants.add(potattaquants.get(i));
 		}
@@ -272,7 +283,7 @@ public class IASimple {
 	
 	public float simulattaque(int id, int id2)
 	{
-		ArrayList<Unite> challengers = AllPays.pays.get(id2).getChallengers();
+		ArrayList<Unite> challengers = GameScreen.apays.pays.get(id2).getChallengers();
 		Collections.sort(challengers,new Comparator<Unite>() {
 			@Override
 			public int compare(Unite o1, Unite o2) {
@@ -307,7 +318,18 @@ public class IASimple {
 					if(Probability.issues[l][i+3]==1)state.pays[id2].nbsoldats-=GameMaster.unitTypes[challengers.get(i).type].cout;
 				}
 				if(state.pays[id2].nbsoldats<0)System.out.println("ESTIMATION ERROR");
-				if(state.pays[id2].nbsoldats==0)state.pays[id2].team=team;
+				if(state.pays[id2].nbsoldats==0)
+				{
+					for(int i=0;i<attaquants.size(); i++)
+					{
+						if(Probability.issues[l][i]==0)
+						{
+							state.pays[id].nbsoldats-=GameMaster.unitTypes[attaquants.get(i).type].cout;
+							state.pays[id2].nbsoldats+=GameMaster.unitTypes[attaquants.get(i).type].cout;
+						}
+					}
+					state.pays[id2].team=team;
+				}
 				scoretotal+=boardScore()*probasituation[l];
 				state.pays[id2].team = beginstate.pays[id2].team;
 				state.pays[id2].nbsoldats = beginstate.pays[id2].nbsoldats;
@@ -321,7 +343,7 @@ public class IASimple {
 	{
 		float score = 0;
 		//Unites alliees
-		score+=cUnits*state.comptePaysTeam(team)*0.05f;
+		score+=cUnits*state.compteUnitesTeam(team)*0.05f;
 		//Unites ennemies
 		score-=cEUnits*state.compteUnitesPasTeam(team)*0.05f;
 		//nombre de pays en possession
@@ -352,7 +374,6 @@ public class IASimple {
 		return new Pays[] {bestpays,bestpays};
 	}*/
 	
-	float bestscore = -1000000000;
 	int bestplaytype = -1;
 	int fromcountry = -1;
 	int tocountry = -1;
@@ -360,6 +381,7 @@ public class IASimple {
 	
 	public void playf(int phase)
 	{
+		//System.out.println("IA PLAY");
 		float basescore = -100000000;
 		boolean action = true;
 		boolean first = true;
@@ -378,17 +400,27 @@ public class IASimple {
 			beginstate.loadCurrentState();
 			state = new BoardState(beginstate);
 			if(!first)basescore = boardScore();
+			double bestscore = -1000000000;
 			
-			if(phase==0)
+			if(phase==0 && GameScreen.master.armies.get(team).newsoldiers>0)
 			{
 				for(int i=0; i<state.pays.length; i++)
 				{
-					float tscore = simuleplace(state.pays[i].id, 0);
-					if(tscore>bestscore)
+					if(state.pays[i].team==team)
 					{
-						bestscore=tscore;
-						bestplaytype = 1;
-						tocountry = state.pays[i].id;
+						
+						double tscore = simuleplace(state.pays[i].id, 0);
+						tscore+=(Math.random()-0.5)*0.00000001;
+						/*System.out.println("------");
+						System.out.println(basescore);
+						System.out.println(tscore);
+						System.out.println("------");*/
+						if(tscore>bestscore)
+						{
+							bestscore=tscore;
+							bestplaytype = 1;
+							tocountry = state.pays[i].id;
+						}
 					}
 				}
 			}
@@ -396,21 +428,42 @@ public class IASimple {
 			{
 				for(int i=0; i<state.pays.length; i++)
 				{
-					if(state.pays[i].team==team)
+					if(state.pays[i].team==team && getAttaquants(state.pays[i].id).size()>0)
 					{
-						for(int j=0; j<AllPays.pays.get(state.pays[i].id).adjacents.size(); j++)
+						for(int j=0; j<GameScreen.apays.pays.get(state.pays[i].id).adjacents.size(); j++)
 						{
-							int adjid = AllPays.pays.get(state.pays[i].id).adjacents.get(j).id;
-							
-							float tscore = simuleplace(state.pays[i].id, 0);
-							if(tscore>bestscore)
+							int adjid = GameScreen.apays.pays.get(state.pays[i].id).adjacents.get(j).id;
+							if(state.pays[adjid].team==team)
 							{
-								bestscore=tscore;
-								bestplaytype = 1;
-								tocountry = state.pays[i].id;
+								double tscore = simuldeplace(state.pays[i].id,adjid, getAttaquants(state.pays[i].id).get(0).type);
+								tscore+=(Math.random()-0.5)*0.00000001;
+								if(tscore>bestscore)
+								{
+									bestscore=tscore;
+									bestplaytype = 3;
+									tocountry = adjid;
+									fromcountry = state.pays[i].id;
+								}
+							}
+							else 
+							{
+								double tscore = simulattaque(state.pays[i].id,adjid);
+								tscore+=(Math.random()-0.5)*0.00000001;
+								System.out.println("------");
+								System.out.print("Score avant attaque : ");
+								System.out.println(basescore);
+								System.out.print("Score après attaque : ");
+								System.out.println(tscore);
+								System.out.println("------");
+								if(tscore>bestscore)
+								{
+									bestscore=tscore;
+									bestplaytype = 2;
+									tocountry = adjid;
+									fromcountry = state.pays[i].id;
+								}
 							}
 						}
-						
 					}
 				}
 			}
@@ -424,11 +477,12 @@ public class IASimple {
 		bestplaytype=4;
 		readytoplay = true;
 		playing=false;
+		//System.out.println(String.valueOf(team)+" "+String.valueOf(phase));
 	}
 	
 	public void play(final int phase)
 	{
-		if(!playing)
+		if(!playing && !readytoplay)
 		{
 			playing=true;
 			new Thread(new Runnable() {
@@ -437,7 +491,7 @@ public class IASimple {
 					playf(phase);
 					
 				}
-			});
+			}).start();
 		}
 		
 		if(readytoplay)
@@ -448,7 +502,14 @@ public class IASimple {
 			}
 			else if(bestplaytype==2)
 			{
-				if(!GameScreen.master.attaquer(fromcountry, tocountry, team, getAttaquants(fromcountry)))System.out.println("IA PROBLEME ATTAQUE");
+				if(!GameScreen.master.attaquer(fromcountry, tocountry, team, getAttaquants(fromcountry)))
+				{
+					System.out.println(team);
+					System.out.println(GameScreen.apays.pays.get(fromcountry).nom);
+					System.out.println(GameScreen.apays.pays.get(tocountry).nom);
+					System.out.println(getAttaquants(fromcountry).size());
+					System.out.println("IA PROBLEME ATTAQUE");
+				}
 			}
 			else if(bestplaytype==3)
 			{
@@ -462,7 +523,6 @@ public class IASimple {
 			}
 			
 			readytoplay=false;
-			bestscore = -1000000000;
 			fromcountry = -1;
 			tocountry = -1;
 			bestplaytype = -1;

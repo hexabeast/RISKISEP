@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.hexabeast.riskisep.gameboard.AllPays;
 import com.hexabeast.riskisep.gameboard.GameMaster;
 import com.hexabeast.riskisep.ui.AllUI;
 
@@ -24,6 +25,7 @@ public class GameScreen implements Screen{
 	public static Vector2 gameMouse;
 	
 	public static GameMaster master;
+	public static AllPays apays;
 	
 	public static Vector2 panPos;
 	public static boolean panning = false;
@@ -39,6 +41,8 @@ public class GameScreen implements Screen{
 	
 	public GameScreen() 
 	{
+		apays = new AllPays();
+		apays.loadPays();
 		master = new GameMaster();
 		master.beginGame();
 		AllUI.loadUI();
