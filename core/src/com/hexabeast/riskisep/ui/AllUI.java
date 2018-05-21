@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Color;
 import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.Main;
+import com.hexabeast.riskisep.gameboard.GameMaster;
 import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class AllUI {
@@ -48,16 +49,21 @@ public class AllUI {
 		}
 		else if(GameScreen.master.gamend)
 		{
-			if(turnButton.isclicked())Main.game=new GameScreen();
+			if(GameMaster.nntrain && GameScreen.master.winner>=0)System.out.println(teamname[GameScreen.master.winner]);
+			if(turnButton.isclicked() || GameMaster.nntrain)Main.game=new GameScreen();
 			
-			Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, "Partie Terminée");
-			TextureManager.fontButton.setColor(teamcol[GameScreen.master.winner]);
-			Main.drawfontCenter(TextureManager.fontButton, 2020, 1150, teamname[GameScreen.master.winner]+" gagne!");
-			TextureManager.fontButton.setColor(Color.WHITE);
+			if(GameScreen.master.winner>=0)
+			{
+				Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, "Partie Terminée");
+				TextureManager.fontButton.setColor(teamcol[GameScreen.master.winner]);
+				Main.drawfontCenter(TextureManager.fontButton, 2020, 1150, teamname[GameScreen.master.winner]+" gagne!");
+				TextureManager.fontButton.setColor(Color.WHITE);
+			}
+			
 		}
 		else if(GameScreen.master.gamestart)
 		{
-			if(turnButton.isclicked())GameScreen.master.gamestart=false;
+			if(turnButton.isclicked() || GameMaster.nntrain)GameScreen.master.gamestart=false;
 			
 			Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, "Début de partie");
 		}

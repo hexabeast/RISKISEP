@@ -7,9 +7,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.hexabeast.riskisep.gameboard.AllPays;
 import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
+
+import amten.ml.examples.NNTest;
 
 public class Main extends Game {
 	
@@ -23,6 +24,7 @@ public class Main extends Game {
 	
 	@Override
 	public void create () {
+
 		batch = new SpriteBatch();
 		Shaders.loadShaders();
 		shapebatch = new ShapeRenderer();
@@ -30,6 +32,7 @@ public class Main extends Game {
 		game = new GameScreen();
 		Inputs.instance = new Inputs();
 		Gdx.input.setInputProcessor(Inputs.instance);
+		NNTest.init();
 	}
 	
 	@Override

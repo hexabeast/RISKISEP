@@ -15,12 +15,15 @@ import com.hexabeast.riskisep.gameboard.AllPays;
 import com.hexabeast.riskisep.gameboard.GameMaster;
 import com.hexabeast.riskisep.gameboard.Unite;
 
+import amten.ml.examples.NNTest;
+
 public class IASimple {
 	public int team;
 	int postcible;
 	int postsource;
 	
 	public boolean playing = false;
+	public boolean nn = false;
 	
 	public static int PROBACCURACY = 1000000;
 	
@@ -208,7 +211,7 @@ public class IASimple {
 		}
 		
 		
-		System.out.println(Arrays.toString(probabilities.p[3][3][3][1][1].probs));
+		//System.out.println(Arrays.toString(probabilities.p[3][3][3][1][1].probs));
 	}
 	
 	public float forces()
@@ -348,19 +351,40 @@ public class IASimple {
 	public float boardScore()
 	{
 		float score = 0;
-		//Unites alliees
-		score+=cUnits*state.compteUnitesTeam(team)*0.05f;
-		//Unites ennemies
-		score-=cEUnits*state.compteUnitesPasTeam(team)*0.05f;
-		//nombre de pays en possession
-		score+=cCountries*state.comptePaysTeam(team)*0.05;
-		//TODO nombre de continents en possession
-		//TODO nombre de continents ennemis en possession
+		//System.out.println(NNTest.feed(state.getState(team)));
 		
-		//score de forces des pays
-		score+=cForce*forces();
-		//score de faiblesses des pays
-		score-=cFaiblesse*faiblesses();
+		boolean usenn = nn;
+		
+		if(usenn)
+		{
+			//System.out.println(team);
+			score=Math.min((float) NNTest.feed(state.getState(team)),3);
+			if(score>=2)
+				{
+				usenn=false;
+				}
+			//score=;
+			//System.out.println(score);
+			//System.out.println((float) NNTest.feed(state.getState(1)));
+		}
+		
+		if(!usenn)
+		{
+			//Unites alliees
+			score+=cUnits*state.compteUnitesTeam(team)*0.05f;
+			//Unites ennemies
+			score-=cEUnits*state.compteUnitesPasTeam(team)*0.05f;
+			//nombre de pays en possession
+			score+=cCountries*state.comptePaysTeam(team)*0.05;
+			//TODO nombre de continents en possession
+			//TODO nombre de continents ennemis en possession
+			
+			//score de forces des pays
+			score+=cForce*forces();
+			//score de faiblesses des pays
+			score-=cFaiblesse*faiblesses();
+		}
+		
 		
 		return score;
 	}

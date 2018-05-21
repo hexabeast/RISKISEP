@@ -11,6 +11,7 @@ import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.Inputs;
 import com.hexabeast.riskisep.Main;
 import com.hexabeast.riskisep.Tools;
+import com.hexabeast.riskisep.ia.BoardState;
 import com.hexabeast.riskisep.ia.IASimple;
 import com.hexabeast.riskisep.ressources.Shaders;
 import com.hexabeast.riskisep.ressources.TextureManager;
@@ -22,8 +23,14 @@ public class GameMaster {
 	public static boolean noTransition = false;
 	public static boolean fastplay = false;
 	public static boolean iaslow = false;
+	public static boolean nntrain = true;
 	
-	public int[] humanstart = {0,0,0,0};
+	public static int nntrainbatch = 100;
+	public static boolean nnenable = true;
+	
+	public static int ngames = 0;
+	
+	public int[] humanstart = {0,0};
 	
 	public int[] human = humanstart.clone();
 	
@@ -70,7 +77,9 @@ public class GameMaster {
 		
 		for(int i=0;i<njoueurs;i++)
 		{
-			ias.add(new IASimple(i));
+			IASimple ia = new IASimple(i);
+			if(nnenable && i>=0)ia.nn=true;
+			ias.add(ia);
 		}
 		this.njoueurs = human.length;
 		GameScreen.apays.selection=null;
@@ -229,7 +238,7 @@ public class GameMaster {
 						ias.get(teamactuel).playf(phase,false);
 						checkWinner();
 					}
-					System.out.println("GameEnd");
+					//System.out.println("GameEnd");
 				}
 			}
 			else
@@ -284,10 +293,17 @@ public class GameMaster {
 			alivenumber+=1;
 			lastalive = i;
 		}
-		if(alivenumber==1)
+		if(alivenumber==1 && !gamend)
 		{
+			ngames+=1;
 			gamend = true;
 			winner = lastalive;
+			BoardState.convert();
+			if(ngames%nntrainbatch==0)
+			{
+				BoardState.train();
+			}
+			
 		}
 	}
 	
@@ -423,6 +439,19 @@ public class GameMaster {
 	
 	public void turnStart()
 	{
+		BoardState.addBoardState();
+		if(BoardState.states.size()>=100)
+		{
+			ngames+=1;
+			gamend = true;
+			winner = -1;
+			BoardState.convert();
+			if(ngames%nntrainbatch==0)
+			{
+				BoardState.train();
+			}
+		}
+		
 		armies.get(teamactuel).newsoldiers+=(int)(armies.get(teamactuel).getCountries().size()/3);
 		for(int i=0;i<armies.size();i++)
 		{
