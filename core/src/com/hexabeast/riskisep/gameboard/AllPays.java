@@ -17,6 +17,8 @@ public class AllPays {
 	public Pays selection = null;
 	public int selectiontype = 1;
 	
+	public ArrayList<Continent> continents = new ArrayList<Continent>();
+	
 	public void loadPays()
 	{
 		pays.clear();
@@ -56,6 +58,25 @@ public class AllPays {
 			}
 		}
 		
+		file = Gdx.files.internal("Continents.txt");
+		text = file.readString();
+		String[] conts = text.split("\r\n");
+		
+		for(int i = 0; i<conts.length; i++)
+		{
+			String[] sep = conts[i].split(";");
+			String[] payss = sep[1].split(":");
+			int[] paysids = new int[payss.length];
+			
+			for(int j = 0; j<payss.length; j++)
+			{
+				paysids[j] = rechercheNom(payss[j]).id;
+			}
+			continents.add(new Continent(sep[0],paysids));
+		}
+		
+		
+		
 		rechercheNom("Australieouest").numberx-=20;
 		rechercheNom("Australieest").numberx+=30;
 		rechercheNom("Alaskaouest").numbery+=70;
@@ -68,6 +89,7 @@ public class AllPays {
 		rechercheNom("Russiecentre").numberx+=15;
 		rechercheNom("Russiecentre").numbery+=15;
 	}
+	
 	
 	public Pays rechercheNom(String st)
 	{

@@ -107,7 +107,8 @@ public class Pays {
 	
 	public boolean isTouched()
 	{
-	    return isTouched(GameScreen.gameMouse.x,GameScreen.gameMouse.y);
+		boolean touch = isTouched(GameScreen.gameMouse.x,GameScreen.gameMouse.y);
+	    return touch;
 	}
 	
 	public ArrayList<Unite> getAttaquants()

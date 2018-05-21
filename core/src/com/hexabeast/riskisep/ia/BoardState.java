@@ -1,7 +1,10 @@
 package com.hexabeast.riskisep.ia;
 
+import java.util.ArrayList;
+
 import com.hexabeast.riskisep.GameScreen;
 import com.hexabeast.riskisep.gameboard.AllPays;
+import com.hexabeast.riskisep.gameboard.Pays;
 
 public class BoardState {
 	public SimplePays[] pays;
@@ -56,6 +59,46 @@ public class BoardState {
 			if(pays[i].team!=t)total+=pays[i].nbsoldats;
 		}
 		return total;
+	}
+	
+	public int getContinentScore(int team)
+	{
+		int recomp = 0;
+		
+		for(int i=0;i<GameScreen.apays.continents.size();i++)
+		{
+			boolean ok = true;
+			for(int j=0;j<GameScreen.apays.continents.get(i).pays.length;j++)
+			{
+				boolean found = false;
+				for(int k=0;k<pays.length;k++)
+				{
+					if(pays[k].team==team && GameScreen.apays.continents.get(i).pays[j] == pays[k].id)found=true;
+				}
+				if(!found)ok=false;
+			}
+			if(ok)
+			{
+				recomp+=GameScreen.apays.continents.get(i).recompense;
+			}
+		}
+		
+		return recomp;
+	}
+	
+	public int getContinentScoreEnnemy(int team)
+	{
+		int recomp = 0;
+		
+		for(int i=0;i<4;i++)
+		{
+			if(i != team)
+			{
+				recomp+=getContinentScore(i);
+			}
+		}
+		
+		return recomp;
 	}
 
 }

@@ -24,16 +24,19 @@ public class IASimple {
 	
 	public static int PROBACCURACY = 1000000;
 	
+	public boolean randomUnits=false;
+	
 	float cUnits = 5;
 	float cEUnits = 6.05f;
 	float cCountries = 12;
-	float cContinents = 1;
+	float cContinents = 8;
+	float cEContinents = 4;
 	float cForce = 0.2f;
 	float cFaiblesse = 0.12f;
 	
 	public static Probabilities probabilities = new Probabilities();
 	public static int sleeptime = 10;
-	public static int slowtime = 300;
+	public static int slowtime = 80;
 	
 	public BoardState state;
 	public BoardState beginstate;
@@ -208,7 +211,7 @@ public class IASimple {
 		}
 		
 		
-		System.out.println(Arrays.toString(probabilities.p[3][3][3][1][1].probs));
+		System.out.println(Arrays.toString(probabilities.p[1][0][0][3][0].probs));
 	}
 	
 	public float forces()
@@ -354,6 +357,10 @@ public class IASimple {
 		score-=cEUnits*state.compteUnitesPasTeam(team)*0.05f;
 		//nombre de pays en possession
 		score+=cCountries*state.comptePaysTeam(team)*0.05;
+		
+		score+=cContinents*state.getContinentScore(team);
+		
+		score-=cEContinents*state.getContinentScoreEnnemy(team);
 		//TODO nombre de continents en possession
 		//TODO nombre de continents ennemis en possession
 		
@@ -383,6 +390,7 @@ public class IASimple {
 	int bestplaytype = -1;
 	int fromcountry = -1;
 	int tocountry = -1;
+	int unittype = 1;
 	boolean readytoplay = false;
 	
 	public void playf(int phase, boolean threaded)
@@ -411,12 +419,20 @@ public class IASimple {
 			
 			if(phase==0 && GameScreen.master.armies.get(team).newsoldiers>0)
 			{
+				int typ = 0;
+				
+				if(randomUnits)
+				{
+					double ran = Math.random();
+					if(GameScreen.master.armies.get(team).newsoldiers>=GameMaster.unitTypes[2].cout && ran>0.8)typ=2;
+					if(GameScreen.master.armies.get(team).newsoldiers>=GameMaster.unitTypes[1].cout && ran>0.93)typ=1;
+				}
 				for(int i=0; i<state.pays.length; i++)
 				{
 					if(state.pays[i].team==team)
 					{
 						
-						double tscore = simuleplace(state.pays[i].id, 0);
+						double tscore = simuleplace(state.pays[i].id, typ);
 						tscore+=(Math.random()-0.5)*0.00000001;
 						/*System.out.println("------");
 						System.out.println(basescore);
@@ -426,6 +442,7 @@ public class IASimple {
 						{
 							bestscore=tscore;
 							bestplaytype = 1;
+							unittype=typ;
 							tocountry = state.pays[i].id;
 						}
 					}
@@ -520,7 +537,7 @@ public class IASimple {
 		
 		if(bestplaytype==1)
 		{
-			if(!GameScreen.master.deployer(tocountry, team, -1000, -1000, 0))System.out.println("IA PROBLEME PLACEMENT");
+			if(!GameScreen.master.deployer(tocountry, team, -1000, -1000, unittype))System.out.println("IA PROBLEME PLACEMENT");
 		}
 		else if(bestplaytype==2)
 		{

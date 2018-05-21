@@ -108,5 +108,30 @@ public class Army {
 		}
 		return c;
 	}
+	
+	public void getRecompenseContinents()
+	{
+		int recomp = 0;
+		ArrayList<Pays> c = getCountries();
+		for(int i=0;i<GameScreen.apays.continents.size();i++)
+		{
+			boolean ok = true;
+			for(int j=0;j<GameScreen.apays.continents.get(i).pays.length;j++)
+			{
+				boolean found = false;
+				for(int k=0;k<c.size();k++)
+				{
+					if(GameScreen.apays.continents.get(i).pays[j] == c.get(k).id)found=true;
+				}
+				if(!found)ok=false;
+			}
+			if(ok)
+			{
+				recomp+=GameScreen.apays.continents.get(i).recompense;
+			}
+		}
+		
+		newsoldiers+=recomp;
+	}
 
 }

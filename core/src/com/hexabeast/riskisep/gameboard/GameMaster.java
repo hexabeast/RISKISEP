@@ -70,7 +70,10 @@ public class GameMaster {
 		
 		for(int i=0;i<njoueurs;i++)
 		{
-			ias.add(new IASimple(i));
+			IASimple ia = new IASimple(i);
+			ia.randomUnits=true;
+			ias.add(ia);
+			
 		}
 		this.njoueurs = human.length;
 		GameScreen.apays.selection=null;
@@ -424,6 +427,7 @@ public class GameMaster {
 	public void turnStart()
 	{
 		armies.get(teamactuel).newsoldiers+=(int)(armies.get(teamactuel).getCountries().size()/3);
+		armies.get(teamactuel).getRecompenseContinents();
 		for(int i=0;i<armies.size();i++)
 		{
 			for(int j=0;j<armies.get(i).soldiers.size();j++)

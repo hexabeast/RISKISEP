@@ -12,8 +12,8 @@ public class AllUI {
 	public static Button turnButton;
 	
 	public static Color[] teamcol = {new Color(0.5f,0.5f,1,1),new Color(1,0.5f,0.5f,1),new Color(0.5f,1,0.5f,1),new Color(1,0.6f,0.5f,1)};
-	public static String[] teamname = {"bleue","rouge","verte","orange"};
-	public static String[] soldiername = {"Bleus","Rouges","Verts","Oranges"};
+	public static String[] teamname = {"bleue","rouge","verte","jaune"};
+	public static String[] soldiername = {"Bleus","Rouges","Verts","Jaunes"};
 	public static String[] phases = {"Placement","Déplacement"};
 	
 	public static void loadUI()

@@ -1,0 +1,6 @@
+Europe;France:Allemagne:England:Italie:Suede:Islande:Russie
+Asie;Moscou:Arabie:ArabieSud:Inde:Chine:Chinesud:Chineprenord:Japon:Alaskaouest:Chinenord:Russieest:Russiecentre
+Afrique;Afriquesud:Madagascar:Afriquest:Afriquecentre:Algerie:Egypte
+Australie;Australieouest:Australieest:Australienord:Australiles
+AmeriqueSud;Bresil:Bresilouest:Chili:Amazonie
+AmeriqueNord;Mexique:USAouest:USAest:Canadaouest:Canadacentre:Canadaest:Canadanord:Alaska:Groenland
