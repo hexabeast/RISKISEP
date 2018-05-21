@@ -23,6 +23,7 @@ import com.hexabeast.riskisep.gameboard.Pays;
 public class TextureManager { 
 	private static ArrayList<Texture> textures = new ArrayList<Texture>();
 	public static Map<String, Texture> tex = new HashMap<String, Texture>();
+	public static Map<String, Pixmap> pix = new HashMap<String, Pixmap>();
 	
 	public static Texture img;
 	
@@ -41,11 +42,13 @@ public class TextureManager {
 	
 	public static Pixmap loadPixMap(String nom)
 	{
+		if(pix.get(nom)!=null)return pix.get(nom);
 		Texture texture = TextureManager.tex.get(nom);
 		if (!texture.getTextureData().isPrepared()) {
             texture.getTextureData().prepare();
         }
-		return texture.getTextureData().consumePixmap();
+		pix.put(nom, texture.getTextureData().consumePixmap());
+		return pix.get(nom);
 	}
 	
 	public static boolean isPixTouched(float x, float y, float w, float h, Texture textu, Pixmap pix, float xx, float yy)

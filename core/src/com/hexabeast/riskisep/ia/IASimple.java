@@ -25,14 +25,15 @@ public class IASimple {
 	public static int PROBACCURACY = 1000000;
 	
 	public boolean randomUnits=false;
+	public boolean randomai=false;
 	
-	float cUnits = 5;
-	float cEUnits = 6.05f;
-	float cCountries = 12;
-	float cContinents = 8;
-	float cEContinents = 4;
-	float cForce = 0.2f;
-	float cFaiblesse = 0.12f;
+	float cUnits = 0f;//10;
+	float cEUnits =  1;//6.05f;
+	float cCountries = 1;// 12;
+	float cContinents = 1;// 20;
+	float cEContinents = 2;// 15;
+	float cForce = 1;// 0.2f;
+	float cFaiblesse = 1;// 0.12f;
 	
 	public static Probabilities probabilities = new Probabilities();
 	public static int sleeptime = 10;
@@ -351,23 +352,28 @@ public class IASimple {
 	public float boardScore()
 	{
 		float score = 0;
-		//Unites alliees
-		score+=cUnits*state.compteUnitesTeam(team)*0.05f;
-		//Unites ennemies
-		score-=cEUnits*state.compteUnitesPasTeam(team)*0.05f;
-		//nombre de pays en possession
-		score+=cCountries*state.comptePaysTeam(team)*0.05;
 		
-		score+=cContinents*state.getContinentScore(team);
+		if(!randomai)
+		{
+			//Unites alliees
+			score+=cUnits*state.compteUnitesTeam(team)*0.05f;
+			//Unites ennemies
+			score-=cEUnits*state.compteUnitesPasTeam(team)*0.05f;
+			//nombre de pays en possession
+			score+=cCountries*state.comptePaysTeam(team)*0.05;
+			
+			score+=cContinents*state.getContinentScore(team);
+			
+			score-=cEContinents*state.getContinentScoreEnnemy(team);
+			//TODO nombre de continents en possession
+			//TODO nombre de continents ennemis en possession
+			
+			//score de forces des pays
+			score+=cForce*forces();
+			//score de faiblesses des pays
+			score-=cFaiblesse*faiblesses();
+		}
 		
-		score-=cEContinents*state.getContinentScoreEnnemy(team);
-		//TODO nombre de continents en possession
-		//TODO nombre de continents ennemis en possession
-		
-		//score de forces des pays
-		score+=cForce*forces();
-		//score de faiblesses des pays
-		score-=cFaiblesse*faiblesses();
 		
 		return score;
 	}
@@ -461,6 +467,7 @@ public class IASimple {
 							{
 								double tscore = simuldeplace(state.pays[i].id,adjid, getAttaquants(state.pays[i].id).get(0).type);
 								tscore+=(Math.random()-0.5)*0.00000001;
+								
 								if(tscore>bestscore)
 								{
 									bestscore=tscore;

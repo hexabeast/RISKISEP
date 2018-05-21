@@ -19,11 +19,14 @@ public class GameMaster {
 	
 	
 	
-	public static boolean noTransition = false;
-	public static boolean fastplay = false;
+	public static boolean noTransition = true;
+	public static boolean fastplay = true;
 	public static boolean iaslow = false;
 	
-	public int[] humanstart = {0,0,0,0};
+	public static int gamestats = 50;
+	public static int gamewincounter = 0;
+	
+	public int[] humanstart = {0,0};
 	
 	public int[] human = humanstart.clone();
 	
@@ -72,6 +75,7 @@ public class GameMaster {
 		{
 			IASimple ia = new IASimple(i);
 			ia.randomUnits=true;
+			if(i==0)ia.randomai=true;
 			ias.add(ia);
 			
 		}
@@ -232,7 +236,14 @@ public class GameMaster {
 						ias.get(teamactuel).playf(phase,false);
 						checkWinner();
 					}
-					System.out.println("GameEnd");
+					if(gamestats>0)
+					{
+						gamestats-=1;
+						if(winner==0)gamewincounter+=1;
+						if(gamestats==0)System.out.println("Bleu gagne "+String.valueOf(gamewincounter));
+						Main.game=new GameScreen();
+						Main.game.master.gamestart=false;
+					}
 				}
 			}
 			else
