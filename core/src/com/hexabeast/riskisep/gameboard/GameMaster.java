@@ -20,13 +20,13 @@ public class GameMaster {
 	
 	
 	public static boolean noTransition = true;
-	public static boolean fastplay = true;
+	public static boolean fastplay = false;
 	public static boolean iaslow = false;
 	
 	public static int gamestats = 50;
 	public static int gamewincounter = 0;
 	
-	public int[] humanstart = {0,0};
+	public int[] humanstart = {0,0,0,0};
 	
 	public int[] human = humanstart.clone();
 	

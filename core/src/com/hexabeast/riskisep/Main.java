@@ -18,8 +18,11 @@ public class Main extends Game {
 	public static SpriteBatch batch;
 	public static ShapeRenderer shapebatch;
 	public static GameScreen game;
+	public static MenuScreen menu;
 	public static float delta;
 	public static float time = 0;
+	
+	public static int gamestate = 0;
 	
 	@Override
 	public void create () {
@@ -28,6 +31,7 @@ public class Main extends Game {
 		shapebatch = new ShapeRenderer();
 		TextureManager.load();
 		game = new GameScreen();
+		menu = new MenuScreen();
 		Inputs.instance = new Inputs();
 		Gdx.input.setInputProcessor(Inputs.instance);
 	}
@@ -53,11 +57,12 @@ public class Main extends Game {
 		delta=Gdx.graphics.getDeltaTime();
 		if(delta>0.05)delta=0.05f;
 		time+=delta;
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Inputs.instance.update();
 		
-		setScreen(game);
+		if(gamestate==0)setScreen(menu);
+		else if(gamestate==1)setScreen(game);
 		
 		Inputs.instance.updateLate();
 		super.render();

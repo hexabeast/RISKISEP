@@ -28,6 +28,7 @@ public class TextureManager {
 	public static Texture img;
 	
 	public static BitmapFont font;
+	public static BitmapFont fontMenu;
 	public static BitmapFont fontButton;
 	public static GlyphLayout fontlayout;
 	
@@ -85,6 +86,10 @@ public class TextureManager {
 		loadOne("panneauv","panneauvert.png");
 		loadOne("blank","blank.png");
 		loadOne("movepoint","unites/movepoint.png");
+		loadOne("movepoint","unites/movepoint.png");
+		loadOne("movepoint","unites/movepoint.png");
+		loadOne("arrowL","arrowL.png");
+		loadOne("arrowR","arrowR.png");
 		
 		loadPaysTextures();
 		
@@ -92,6 +97,8 @@ public class TextureManager {
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 26;
 		font = generator.generateFont(parameter);
+		fontMenu = generator.generateFont(parameter);
+		fontMenu.setColor(Color.BLACK);
 		parameter.size = 32;
 		fontButton = generator.generateFont(parameter);
 		generator.dispose();
