@@ -27,17 +27,28 @@ public class IASimple {
 	public boolean randomUnits=false;
 	public boolean randomai=false;
 	
-	float cUnits = 0f;//10;
-	float cEUnits =  1;//6.05f;
-	float cCountries = 1;// 12;
-	float cContinents = 1;// 20;
-	float cEContinents = 2;// 15;
-	float cForce = 1;// 0.2f;
-	float cFaiblesse = 1;// 0.12f;
+	static float cUnits = 1f;//10;
+	static float cEUnits =  1.02f;//6.05f;
+	static float cCountries = 3;// 12;
+	static float cContinents = 1;// 20;
+	static float cEContinents = 2;// 15;
+	static float cForce = 0.003f;// 0.2f;
+	static float cFaiblesse = 0.003f;// 0.12f;
+	
+	int cUnitsI = 0;
+	int cEUnitsI = 1;
+	int cCountriesI = 2;
+	int cContinentsI = 3;
+	int cEContinentsI = 4;
+	int cForceI = 5;
+	int cFaiblesseI = 6;
+	
+	public static float[] cS = new float[] {cUnits,cEUnits,cCountries,cContinents,cEContinents,cForce,cFaiblesse};
+	public float[] c = cS.clone();
 	
 	public static Probabilities probabilities = new Probabilities();
 	public static int sleeptime = 10;
-	public static int slowtime = 80;
+	public static int slowtime = 200;
 	
 	public BoardState state;
 	public BoardState beginstate;
@@ -212,7 +223,7 @@ public class IASimple {
 		}
 		
 		
-		System.out.println(Arrays.toString(probabilities.p[1][0][0][3][0].probs));
+		//System.out.println(Arrays.toString(probabilities.p[1][0][0][3][0].probs));
 	}
 	
 	public float forces()
@@ -356,22 +367,20 @@ public class IASimple {
 		if(!randomai)
 		{
 			//Unites alliees
-			score+=cUnits*state.compteUnitesTeam(team)*0.05f;
+			score+=c[cUnitsI]*state.compteUnitesTeam(team)*0.05f;
 			//Unites ennemies
-			score-=cEUnits*state.compteUnitesPasTeam(team)*0.05f;
+			score-=c[cEUnitsI]*state.compteUnitesPasTeam(team)*0.05f;
 			//nombre de pays en possession
-			score+=cCountries*state.comptePaysTeam(team)*0.05;
+			score+=c[cCountriesI]*state.comptePaysTeam(team)*0.05;
 			
-			score+=cContinents*state.getContinentScore(team);
+			score+=c[cContinentsI]*state.getContinentScore(team);
 			
-			score-=cEContinents*state.getContinentScoreEnnemy(team);
-			//TODO nombre de continents en possession
-			//TODO nombre de continents ennemis en possession
+			score-=c[cEContinentsI]*state.getContinentScoreEnnemy(team);
 			
 			//score de forces des pays
-			score+=cForce*forces();
+			score+=c[cForceI]*forces();
 			//score de faiblesses des pays
-			score-=cFaiblesse*faiblesses();
+			score-=c[cFaiblesseI]*faiblesses();
 		}
 		
 		

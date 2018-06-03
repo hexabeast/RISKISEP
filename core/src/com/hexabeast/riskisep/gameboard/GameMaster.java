@@ -1,6 +1,7 @@
 package com.hexabeast.riskisep.gameboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,21 +18,27 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class GameMaster {
 	
-	
-	
 	public static boolean noTransition = true;
-	public static boolean fastplay = false;
+	public static boolean fastplay = true;
 	public static boolean iaslow = false;
+	public static boolean iaexperience = true;
+	public static float iaexperiencebest = 1;
+	public static float[] iaexperiencec = IASimple.cS.clone();
+	public static float[] iaexperiencecbest = IASimple.cS.clone();
 	
-	public static int gamestats = 50;
+	public int compteurtour = 0;
+	
+	
+	public static int gamestatsMax = 300;
+	public static int gamestats = gamestatsMax;
 	public static int gamewincounter = 0;
 	
-	public int[] humanstart = {0,0,0,0};
+	public static int[] humanstart = {0,0,0,0,0,0};
 	
 	public int[] human = humanstart.clone();
 	
 	public static Unite[] unitTypes = {new Soldat(-1,-1,-1),new Cheval(-1,-1,-1),new Cannon(-1,-1,-1)};
-	public static Color[] teamcol = {new Color(0,0,1,1),new Color(1,0,0,1),new Color(0,1,0,1),new Color(1,1,0,1)};
+	public static Color[] teamcol = {new Color(0,0,1,1),new Color(1,0,0,1),new Color(0,1,0,1),new Color(1,1,0,1),new Color(1,0,1,1),new Color(0.8f,0.8f,0,1)};
 	
 	public static int unitstartnumber = 1; 
 	
@@ -75,7 +82,8 @@ public class GameMaster {
 		{
 			IASimple ia = new IASimple(i);
 			ia.randomUnits=true;
-			if(i==0)ia.randomai=true;
+			//if(i==0)ia.randomai=true;
+			if(i==1)ia.c=iaexperiencec;
 			ias.add(ia);
 			
 		}
@@ -227,6 +235,7 @@ public class GameMaster {
 				if(!fastplay)
 				{
 					ias.get(teamactuel).play(phase);
+					
 				}
 				else if (!firstturn)
 				{
@@ -234,13 +243,40 @@ public class GameMaster {
 					{
 						//System.out.println(armies.get(teamactuel).soldiers.size());
 						ias.get(teamactuel).playf(phase,false);
+						
 						checkWinner();
 					}
 					if(gamestats>0)
 					{
 						gamestats-=1;
 						if(winner==0)gamewincounter+=1;
-						if(gamestats==0)System.out.println("Bleu gagne "+String.valueOf(gamewincounter));
+						
+						
+						if(gamestats==0)
+						{
+							float perfs = (float)gamewincounter/(float)gamestatsMax;
+							System.out.println("Bleu gagne "+String.valueOf(perfs));
+							
+							if(iaexperience)
+							{
+								if(perfs<iaexperiencebest)
+								{
+									iaexperiencebest=perfs;
+									iaexperiencecbest = iaexperiencec.clone();
+									System.out.println(Arrays.toString(iaexperiencecbest));
+								}
+								iaexperiencec = iaexperiencecbest.clone();
+								for(int i=0;i<iaexperiencec.length;i++)
+								{
+									iaexperiencec[i]+=iaexperiencec[i]*(Math.random()-0.5);
+								}
+							}
+							gamestats=gamestatsMax;
+							gamewincounter=0;
+						}
+						
+						
+						
 						Main.game=new GameScreen();
 						Main.game.master.gamestart=false;
 					}
@@ -303,6 +339,27 @@ public class GameMaster {
 			gamend = true;
 			winner = lastalive;
 		}
+		
+		compteurtour+=1;
+		if(fastplay)
+		{
+			if(compteurtour>=300)
+			{
+				int maxim = 0;
+				int maxwin = -1;
+				for(int i=0;i<armies.size();i++)
+				{
+					if(armies.get(i).soldiers.size()>maxim)
+					{
+						maxim=armies.get(i).soldiers.size();
+						maxwin=i;
+					}
+				}
+				gamend = true;
+				winner = maxwin;
+			}
+		}
+		
 	}
 	
 	public boolean deployer(int paysid, int team, float x, float y, int type)

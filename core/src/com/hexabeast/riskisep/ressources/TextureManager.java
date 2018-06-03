@@ -29,6 +29,7 @@ public class TextureManager {
 	
 	public static BitmapFont font;
 	public static BitmapFont fontMenu;
+	public static BitmapFont fontMenu2;
 	public static BitmapFont fontButton;
 	public static GlyphLayout fontlayout;
 	
@@ -90,6 +91,8 @@ public class TextureManager {
 		loadOne("movepoint","unites/movepoint.png");
 		loadOne("arrowL","arrowL.png");
 		loadOne("arrowR","arrowR.png");
+		loadOne("textBoxCursor","textBoxCursor.png");
+		loadOne("textBoxSurline","textBoxSurline.png");
 		
 		loadPaysTextures();
 		
@@ -99,6 +102,8 @@ public class TextureManager {
 		font = generator.generateFont(parameter);
 		fontMenu = generator.generateFont(parameter);
 		fontMenu.setColor(Color.BLACK);
+		fontMenu2 = generator.generateFont(parameter);
+		fontMenu2.setColor(Color.BLACK);
 		parameter.size = 32;
 		fontButton = generator.generateFont(parameter);
 		generator.dispose();

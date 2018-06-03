@@ -2,6 +2,7 @@ package com.hexabeast.riskisep;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,14 +14,20 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class Main extends Game {
 	
-	public static int windowWidth = 1500;
+	public static int windowWidth = 1600;
 	public static int windowHeight = 900;
+	public static int cwindowWidth = windowWidth;
+	public static int cwindowHeight = windowHeight;
+	public static float zoomratio = 1;
+	
 	public static SpriteBatch batch;
 	public static ShapeRenderer shapebatch;
 	public static GameScreen game;
 	public static MenuScreen menu;
 	public static float delta;
 	public static float time = 0;
+	
+	public static InputMultiplexer inputMultiplexer;
 	
 	public static int gamestate = 0;
 	
@@ -31,9 +38,11 @@ public class Main extends Game {
 		shapebatch = new ShapeRenderer();
 		TextureManager.load();
 		game = new GameScreen();
-		menu = new MenuScreen();
 		Inputs.instance = new Inputs();
-		Gdx.input.setInputProcessor(Inputs.instance);
+		inputMultiplexer= new InputMultiplexer();
+		inputMultiplexer.addProcessor(Inputs.instance);
+		Gdx.input.setInputProcessor(inputMultiplexer);
+		menu = new MenuScreen();
 	}
 	
 	@Override
@@ -49,7 +58,11 @@ public class Main extends Game {
 	@Override
 	public void resize (int width, int height) {
 		Gdx.graphics.setWindowedMode(16*height/9, height);
-		super.resize(width, height);
+		cwindowWidth=16*height/9;
+		cwindowHeight=height;
+		
+		zoomratio=(float)cwindowWidth/(float)windowWidth;
+		super.resize(16*height/9, height);
 	}
 
 	@Override
