@@ -48,7 +48,7 @@ public class AllUI {
 		}
 		else if(GameScreen.master.gamend)
 		{
-			if(turnButton.isclicked())Main.game=new GameScreen();
+			if(turnButton.isclicked())GameScreen.master.resetGame();
 			
 			Main.drawfontCenter(TextureManager.fontButton, 2020, 1210, "Partie Terminée");
 			TextureManager.fontButton.setColor(teamcol[GameScreen.master.winner]);

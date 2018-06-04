@@ -20,6 +20,8 @@ public class IASimple {
 	int postcible;
 	int postsource;
 	
+	public boolean alive =true;
+	
 	public boolean playing = false;
 	
 	public static int PROBACCURACY = 1000000;
@@ -54,7 +56,6 @@ public class IASimple {
 	public BoardState beginstate;
 	
 	public int phase = 0;
-	public Thread thread;
 	//float c
 	
 	public IASimple(int team)
@@ -63,9 +64,9 @@ public class IASimple {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true)
+				while(alive)
 				{
-					while(playing==false)
+					while(!playing && alive)
 					{
 						try {
 							Thread.sleep(sleeptime);
@@ -73,7 +74,7 @@ public class IASimple {
 							e.printStackTrace();
 						}
 					}
-					playf(phase, true);
+					if(alive)playf(phase, true);
 				}
 			}
 		}).start();

@@ -67,6 +67,16 @@ public class GameMaster {
 	{
 	}
 	
+	public void resetGame()
+	{
+		for(int i=0;i<njoueurs;i++)
+		{
+			ias.get(i).alive=false;
+			
+		}
+		Main.game = new GameScreen();
+	}
+	
 	public void beginGame()
 	{
 		human = humanstart.clone();
@@ -277,7 +287,7 @@ public class GameMaster {
 						
 						
 						
-						Main.game=new GameScreen();
+						resetGame();
 						Main.game.master.gamestart=false;
 					}
 				}

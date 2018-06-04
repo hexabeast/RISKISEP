@@ -184,7 +184,7 @@ public class MenuScreen implements Screen{
 				GameMaster.humanstart = new int[njoueurs];
 				for(int i=0;i<njoueurs;i++)GameMaster.humanstart[i]=1-typejoueur[i];
 				Main.gamestate=1;
-				Main.game=new GameScreen();
+				GameScreen.master.resetGame();
 				scene.clear();
 				Main.inputMultiplexer.removeProcessor(scene);
 			}
