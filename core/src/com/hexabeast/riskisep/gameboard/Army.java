@@ -12,7 +12,7 @@ public class Army {
 	public ArrayList<Unite> deadsoldiers = new ArrayList<Unite>();
 	
 	public int team = 0;
-	public int newsoldiers = 10;
+	public int newsoldiers = 0;
 	
 	public Army(int team)
 	{

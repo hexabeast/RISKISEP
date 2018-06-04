@@ -18,10 +18,10 @@ import com.hexabeast.riskisep.ressources.TextureManager;
 
 public class GameMaster {
 	
-	public static boolean noTransition = true;
-	public static boolean fastplay = true;
+	public static boolean noTransition = false;
+	public static boolean fastplay = false;
 	public static boolean iaslow = false;
-	public static boolean iaexperience = true;
+	public static boolean iaexperience = false;
 	public static float iaexperiencebest = 1;
 	public static float[] iaexperiencec = IASimple.cS.clone();
 	public static float[] iaexperiencecbest = IASimple.cS.clone();
@@ -85,7 +85,9 @@ public class GameMaster {
 		IASimple.calculProb(unitTypes);
 		for(int i=0;i<njoueurs;i++)
 		{
-			armies.add(new Army(i));
+			Army ar = new Army(i);
+			ar.newsoldiers = 50-5*njoueurs;
+			armies.add(ar);
 		}
 		
 		for(int i=0;i<njoueurs;i++)
@@ -107,7 +109,7 @@ public class GameMaster {
 		{
 			for(int j=0;j<njoueurs;j++)
 			{
-				if(i*njoueurs+j<GameScreen.apays.pays.size())for(int l=0;l<unitstartnumber;l++)armies.get(j).addSoldierForce(0, rlist.get(i*njoueurs+j).id);
+				if(i*njoueurs+j<GameScreen.apays.pays.size())for(int l=0;l<unitstartnumber;l++)armies.get(j).addSoldier(0, rlist.get(i*njoueurs+j).id);
 			}
 		}
 		turnStart();
@@ -350,7 +352,6 @@ public class GameMaster {
 			winner = lastalive;
 		}
 		
-		compteurtour+=1;
 		if(fastplay)
 		{
 			if(compteurtour>=300)
@@ -487,6 +488,8 @@ public class GameMaster {
 		lastPays = -1;
 		
 		phase+=1;
+		if(phase==1 && compteurtour==0)phase=2;
+		
 		GameScreen.apays.selection=null;
 		GameScreen.apays.selectiontype=1;
 		if(phase==2)
@@ -498,13 +501,15 @@ public class GameMaster {
 			if(teamactuel==njoueurs)teamactuel=0;
 			while(teamactuel<njoueurs && armies.get(teamactuel).soldiers.size()==0)teamactuel+=1;
 			
+			if(teamactuel==0)compteurtour+=1;
+			
 			turnStart();
 		}
 	}
 	
 	public void turnStart()
 	{
-		armies.get(teamactuel).newsoldiers+=(int)(armies.get(teamactuel).getCountries().size()/3);
+		if(compteurtour>0)armies.get(teamactuel).newsoldiers+=(int)(armies.get(teamactuel).getCountries().size()/3);
 		armies.get(teamactuel).getRecompenseContinents();
 		for(int i=0;i<armies.size();i++)
 		{
