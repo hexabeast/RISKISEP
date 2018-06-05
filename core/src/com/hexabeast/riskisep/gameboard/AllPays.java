@@ -23,7 +23,7 @@ public class AllPays {
 	{
 		pays.clear();
 		JsonReader json = new JsonReader();
-		JsonValue base = json.parse(Gdx.files.internal("pays/risk.json"));
+		JsonValue base = json.parse(Gdx.files.internal("assets/"+"pays/risk.json"));
 
 		//array objects in json if you would have more components
 		for (JsonValue comp : base.get("regions"))
@@ -37,7 +37,7 @@ public class AllPays {
 		    pays.add(new Pays(pays.size(),nom,x,GameScreen.camh-y-TextureManager.tex.get(nom).getHeight()/2,w,h));
 		}
 
-		FileHandle file = Gdx.files.internal("PaysLiens.txt");
+		FileHandle file = Gdx.files.internal("assets/"+"PaysLiens.txt");
 		String text = file.readString();
 		String[] liens = text.split("\r\n");
 		
@@ -58,7 +58,7 @@ public class AllPays {
 			}
 		}
 		
-		file = Gdx.files.internal("Continents.txt");
+		file = Gdx.files.internal("assets/"+"Continents.txt");
 		text = file.readString();
 		String[] conts = text.split("\r\n");
 		

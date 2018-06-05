@@ -16,11 +16,11 @@ public class Shaders {
 	{
 		ShaderProgram.pedantic = false;
 		
-		base = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/passthrough.fragx"));
-		outline = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/outline.fragx"));
-		color = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/color.fragx"));
-		colorsoldiers = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/colorsoldiers.fragx"));
-		wave = new ShaderProgram(Gdx.files.internal("shaders/passthroughvertex.fragx"),Gdx.files.internal("shaders/wave.fragx"));
+		base = new ShaderProgram(Gdx.files.internal("assets/"+"shaders/passthroughvertex.fragx"),Gdx.files.internal("assets/"+"shaders/passthrough.fragx"));
+		outline = new ShaderProgram(Gdx.files.internal("assets/"+"shaders/passthroughvertex.fragx"),Gdx.files.internal("assets/"+"shaders/outline.fragx"));
+		color = new ShaderProgram(Gdx.files.internal("assets/"+"shaders/passthroughvertex.fragx"),Gdx.files.internal("assets/"+"shaders/color.fragx"));
+		colorsoldiers = new ShaderProgram(Gdx.files.internal("assets/"+"shaders/passthroughvertex.fragx"),Gdx.files.internal("assets/"+"shaders/colorsoldiers.fragx"));
+		wave = new ShaderProgram(Gdx.files.internal("assets/"+"shaders/passthroughvertex.fragx"),Gdx.files.internal("assets/"+"shaders/wave.fragx"));
 		
 		if(!base.isCompiled())System.out.println("base : "+base.getLog());
 		if(!outline.isCompiled())System.out.println("outline : "+outline.getLog());

@@ -37,7 +37,7 @@ public class TextureManager {
 	
 	public static void loadOne(String name, String namefile)
 	{
-		Texture temp = new Texture(namefile);
+		Texture temp = new Texture("assets/"+namefile);
 		tex.put(name, temp);
 		textures.add(temp);
 	}
@@ -96,7 +96,7 @@ public class TextureManager {
 		
 		loadPaysTextures();
 		
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/cartoon.ttf"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/"+"fonts/cartoon.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 26;
 		font = generator.generateFont(parameter);
@@ -119,7 +119,7 @@ public class TextureManager {
 	public static void loadPaysTextures()
 	{
 		JsonReader json = new JsonReader();
-		JsonValue base = json.parse(Gdx.files.internal("pays/risk.json"));
+		JsonValue base = json.parse(Gdx.files.internal("assets/"+"pays/risk.json"));
 
 		//array objects in json if you would have more components
 		for (JsonValue comp : base.get("regions"))
